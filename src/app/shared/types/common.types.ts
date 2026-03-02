@@ -1,0 +1,84 @@
+export interface ApiResponse {
+  data: Plan[]
+  success: boolean
+  message: string
+}
+
+export interface Plan {
+  planId: number
+  modelNumber: string
+  partNumber: string
+  productionStartDate: string
+  productionEndDate: string
+  demandDueDate: string
+  totalQuantity: number
+  completedQty: number
+  remainingQty: number
+  dailyProductionQuantity: number
+  completionPercentage: number
+  isOverdue: boolean
+  daysRemaining: number
+  modelId?: number
+  modelName?: string
+  parts: Part[]
+}
+
+export interface Part {
+  partId?: number
+  partName?: string
+  defects: Defect[]
+}
+
+export interface Defect {
+  recordId: number
+  actualDefect: string
+  defectLv1: string
+  defectLv2: string
+  defectLv3: string
+  defectQty: number
+  productionLine: string
+  detectedProcess: string
+  defectDate: string
+}
+
+export interface ChatMessage {
+  id: string;
+  text: string;
+  sender: 'user' | 'bot';
+  timestamp: Date;
+  items?: string[];
+  isHtml?: boolean;
+  fileUrl?: string;
+  botData?: ChatBotData;
+}
+
+export interface ChatBotDefect {
+  defectName: string;
+  totalQty: number;
+  occurrences: number;
+  defectLv1: string;
+  defectLv2: string;
+  defectLv3: string;
+  productionLine: string;
+  detectedProcess: string;
+  defectDate: string;
+}
+
+export interface ChatBotPart {
+  partId: number;
+  partName: string;
+}
+
+export interface ChatBotData {
+  modelId: number;
+  modelName: string;
+  parts: ChatBotPart[];
+  top3Defects: ChatBotDefect[];
+}
+
+export interface ChatBotApiResponse {
+  success: boolean;
+  message: string;
+  intent: string;
+  data: ChatBotData;
+}

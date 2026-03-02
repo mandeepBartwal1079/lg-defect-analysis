@@ -1,0 +1,50 @@
+import { CommonModule } from '@angular/common';
+import { Component, inject, signal, DestroyRef, computed } from '@angular/core';
+import { Header } from '../../shared/components/header/header';
+import { ChatBot } from '../../shared/components/chat-bot/chat-bot';
+import { Shared } from '../../shared/services/shared';
+import { ApiResponse, Plan } from '../../shared/types/common.types';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DefectCard } from '../../shared/components/defect-card/defect-card';
+
+@Component({
+  selector: 'app-dashboard',
+  imports: [CommonModule, Header, ChatBot, DefectCard],
+  templateUrl: './dashboard.html',
+  styleUrl: './dashboard.scss',
+})
+export class Dashboard {
+  sharedService = inject(Shared);
+  destroyRef = inject(DestroyRef);
+  plans = signal<Plan[]>([]);
+
+  currentTodayDate = computed(() => {
+    return new Date().toLocaleDateString();
+  });
+
+  // Filter plans to show only those starting today
+  filteredPlans = computed(() => {
+    const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    return this.plans().filter(plan => {
+      if (!plan.productionStartDate) return false;
+      // Extract only the date part (YYYY-MM-DD) from the productionStartDate string
+      const planDate = plan.productionStartDate.split('T')[0];
+      return planDate === today;
+    });
+  });
+
+  ngOnInit(): void {
+   this.getPlans();
+  }
+
+  getPlans() {
+    this.sharedService.getCurrentProductionPlans().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((response: ApiResponse) => {
+      if (response.success) {
+        this.plans.set(response.data);
+      } else {
+        this.plans.set([]);
+        console.error(response.message);
+      }
+    });
+  }
+}

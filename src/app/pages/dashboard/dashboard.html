@@ -1,0 +1,15 @@
+<div class="dashboard-root">
+  <app-header></app-header>
+  <div class="dashboard">
+    <div class="defects-grid">
+      @for (planItem of filteredPlans(); track planItem.planId) {
+        <app-defect-card [plan]="planItem" />
+      } @empty {
+        <div class="no-plans">
+          <p>No production plans scheduled for today ({{ currentTodayDate() }}).</p>
+        </div>
+      }
+    </div>
+  </div>
+  <app-chat-bot />
+</div>
