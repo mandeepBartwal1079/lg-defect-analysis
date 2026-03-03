@@ -9,7 +9,7 @@
   gap: clamp(8px, 1vw, 16px);
   color: #fff;
   transition: border-color 0.2s;
-  // height: 100%; // Fill the grid cell
+  cursor: pointer;
   height: 100%;
   box-sizing: border-box;
   &:hover {

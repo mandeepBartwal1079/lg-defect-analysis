@@ -3,15 +3,16 @@ import { Component, inject, signal, DestroyRef, computed, effect } from '@angula
 import { Header } from '../../shared/components/header/header';
 import { ChatBot } from '../../shared/components/chat-bot/chat-bot';
 import { Shared } from '../../shared/services/shared';
-import { ApiResponse, Plan } from '../../shared/types/common.types';
+import { ApiResponse, DefectModalDataI, Plan } from '../../shared/types/common.types';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DefectCard } from '../../shared/components/defect-card/defect-card';
 import { Filters } from '../../shared/components/filters/filters';
 import { switchMap } from 'rxjs';
+import { DefectModal } from '../../shared/components/defect-modal/defect-modal';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, Header, ChatBot, DefectCard, Filters],
+  imports: [CommonModule, Header, ChatBot, DefectCard, Filters, DefectModal],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -19,6 +20,8 @@ export class Dashboard {
   sharedService = inject(Shared);
   destroyRef = inject(DestroyRef);
   plans = signal<Plan[]>([]);
+  isModalOpen = signal(false);
+  selectedDefectDetail = signal<DefectModalDataI | null>(null);
 
   currentTodayDate = computed(() => {
     return new Date().toLocaleDateString();
@@ -64,6 +67,23 @@ export class Dashboard {
         console.error(response.message);
       }
     });
+  }
+
+  openPlanDetails(plan: Plan) {
+    this.isModalOpen.set(true);
+    this.selectedDefectDetail.set(null); // Clear previous detail
+    this.sharedService.getDefectModalData(plan.modelNumber).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((response: DefectModalDataI) => {
+      if (response.success) {
+        this.selectedDefectDetail.set(response);
+      } else {
+        console.error(response.message);
+      }
+    });
+  }
+
+  closeModal() {
+    this.isModalOpen.set(false);
+    this.selectedDefectDetail.set(null);
   }
 
   protected gridCols = computed(() => {

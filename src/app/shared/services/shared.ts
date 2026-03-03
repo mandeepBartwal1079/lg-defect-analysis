@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
-import { ApiResponse } from '../types/common.types';
+import { ApiResponse, DefectModalDataI } from '../types/common.types';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -30,6 +30,10 @@ export class Shared {
   }
   getChatBotResponse(query: string) {
     return this._httpClient.get<ApiResponse>(`${environment.apiUrl}ChatBot/Chat?query=${query}`);
+  }
+
+  getDefectModalData(modelNumber: string){
+    return this._httpClient.get<DefectModalDataI>(`${environment.apiUrl}Master/GetModelDefectDetail?modelNumber=${modelNumber}`);
   }
 
   applyFilters(filters: any) {

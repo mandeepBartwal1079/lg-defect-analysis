@@ -90,3 +90,19 @@ export interface ChatBotApiResponse {
   intent: string;
   data: ChatBotData;
 }
+
+export interface DefectModalDataI {
+  data: Data
+  success: boolean
+  message: string
+}
+
+export interface Data {
+  model: string
+  defectType: string
+  products: string[]
+  occurrenceCount: number
+  occurrencesDisplay: string
+  resolutionDate: string
+  resolutionSteps: any[]
+}

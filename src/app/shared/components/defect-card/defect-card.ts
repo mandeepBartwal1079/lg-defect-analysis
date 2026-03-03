@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, output } from '@angular/core';
 import { Plan, Defect } from '../../types/common.types';
 
 @Component({
@@ -10,6 +10,7 @@ import { Plan, Defect } from '../../types/common.types';
 })
 export class DefectCard {
   plan = input.required<Plan>();
+  openDetails = output<Plan>();
 
   // Extract first three defects from all parts
   displayDefects = computed(() => {
@@ -24,4 +25,8 @@ export class DefectCard {
 
     return allDefects.slice(0, 3);
   });
+
+  openPlanDetails(): void {
+    this.openDetails.emit(this.plan());
+  }
 }

@@ -1,0 +1,74 @@
+<div class="modal-overlay" *ngIf="isOpen()" (click)="onOverlayClick($event)">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <header class="modal-header">
+      <div class="header-left">
+        <h2 class="modal-title">Defect Details</h2>
+        <span class="model-badge" *ngIf="defectDetail()">{{ defectDetail()?.data?.model }}</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn refresh-btn" (click)="onRefreshClick()" title="Refresh Data">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+        </button>
+        <button class="icon-btn close-btn" (click)="onCloseClick()" title="Close Modal">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Modal Content -->
+    <main class="modal-body">
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="!defectDetail()">
+        <div class="spinner"></div>
+        <p>Fetching defect information...</p>
+      </div>
+
+      <!-- Data Content -->
+      <div class="content-wrapper" *ngIf="defectDetail()">
+        <section class="info-grid">
+          <div class="info-card highlight">
+            <label>Defect Type</label>
+            <div class="value">{{ defectDetail()?.data?.defectType }}</div>
+          </div>
+
+          <div class="info-card">
+            <label>Occurrences</label>
+            <div class="value count">{{ defectDetail()?.data?.occurrenceCount }}</div>
+            <div class="sub-value">{{ defectDetail()?.data?.occurrencesDisplay }}</div>
+          </div>
+
+          <div class="info-card">
+            <label>Resolution Date</label>
+            <div class="value">{{ defectDetail()?.data?.resolutionDate || 'Pending' }}</div>
+          </div>
+        </section>
+
+        <section class="details-section">
+          <div class="section-block">
+            <h3 class="section-title">Resolution Steps</h3>
+            <div class="steps-list" *ngIf="defectDetail()?.data?.resolutionSteps?.length; else noSteps">
+              <div class="step-item" *ngFor="let step of defectDetail()?.data?.resolutionSteps; let i = index">
+                <span class="step-number">{{ i + 1 }}</span>
+                <div class="step-content">{{ step }}</div>
+              </div>
+            </div>
+            <ng-template #noSteps>
+              <div class="empty-message">No resolution steps documented yet.</div>
+            </ng-template>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Modal Footer -->
+    <footer class="modal-footer">
+      <button class="btn btn-secondary" (click)="onCloseClick()">Close</button>
+    </footer>
+  </div>
+</div>

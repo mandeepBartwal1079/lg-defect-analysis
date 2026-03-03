@@ -1,4 +1,4 @@
-<article class="defect-card">
+<article class="defect-card" (click)="openPlanDetails()">
   <div class="card-header">
     <h3 class="model-name">{{ plan().modelNumber || 'Unknown Model' }}</h3>
     <span class="plan-id">{{ plan().productionLine }}</span>
