@@ -47,4 +47,12 @@ export class Dashboard {
       }
     });
   }
+
+  protected gridCols = computed(() => {
+    const n = this.filteredPlans().length;
+    if (n <= 4)  return n;              // 1 row  (1–4 cards)
+    if (n <= 10) return Math.ceil(n / 2); // 2 rows (5–10 cards)
+    if (n <= 18) return Math.ceil(n / 3); // 3 rows (11–18 cards)
+    return Math.min(Math.ceil(n / 4), 6); // 4 rows, max 6 cols (19+ cards)
+  });
 }
