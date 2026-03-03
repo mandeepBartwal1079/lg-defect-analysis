@@ -1,15 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal, DestroyRef, computed } from '@angular/core';
+import { Component, inject, signal, DestroyRef, computed, effect } from '@angular/core';
 import { Header } from '../../shared/components/header/header';
 import { ChatBot } from '../../shared/components/chat-bot/chat-bot';
 import { Shared } from '../../shared/services/shared';
 import { ApiResponse, Plan } from '../../shared/types/common.types';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DefectCard } from '../../shared/components/defect-card/defect-card';
+import { Filters } from '../../shared/components/filters/filters';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, Header, ChatBot, DefectCard],
+  imports: [CommonModule, Header, ChatBot, DefectCard, Filters],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -22,20 +24,36 @@ export class Dashboard {
     return new Date().toLocaleDateString();
   });
 
+ constructor() {
+    // Converts the filters signal to an observable, switchMap cancels
+    // any in-flight request when filters change
+    toObservable(this.sharedService.currentFilters)
+      .pipe(
+        switchMap(filters => this.sharedService.getCurrentProductionPlans(filters)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((response: ApiResponse) => {
+        if (response.success) {
+          this.plans.set(response.data);
+        } else {
+          this.plans.set([]);
+          console.error(response.message);
+        }
+      });
+  }
+
   // Filter plans to show only those starting today
   filteredPlans = computed(() => {
     const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    const filters = this.sharedService.currentFilters();
+    console.log(filters, 'jjkfhdkjsfksdkjfknsdk');
     return this.plans().filter(plan => {
       if (!plan.productionStartDate) return false;
-      // Extract only the date part (YYYY-MM-DD) from the productionStartDate string
       const planDate = plan.productionStartDate.split('T')[0];
       return planDate === today;
     });
   });
 
-  ngOnInit(): void {
-   this.getPlans();
-  }
 
   getPlans() {
     this.sharedService.getCurrentProductionPlans().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((response: ApiResponse) => {

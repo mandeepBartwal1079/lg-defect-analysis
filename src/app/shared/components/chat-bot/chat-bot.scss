@@ -558,10 +558,11 @@
 
  /* Label / value rows */
  .dc-row {
-   display: flex;
-   align-items: baseline;
-   gap: 6px;
-   margin-bottom: 3px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 3px;
+  flex-direction: column;
 
    &:last-child {
      margin-bottom: 0;
@@ -626,11 +627,18 @@
    min-width: 0;
  }
 
- .defect-name {
-   font-size: 12px;
-   font-weight: 600;
-   color: #e2e8f0;
-   margin-bottom: 5px;
-   line-height: 1.35;
-   word-break: break-word;
- }
+.defect-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: #e2e8f0;
+  margin-bottom: 5px;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.defect-meta {
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.3;
+  margin-top: 2px;
+}

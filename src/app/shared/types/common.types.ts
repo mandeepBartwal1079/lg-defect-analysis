@@ -7,6 +7,7 @@ export interface ApiResponse {
 export interface Plan {
   planId: number
   modelNumber: string
+  productionLine: string
   partNumber: string
   productionStartDate: string
   productionEndDate: string
@@ -69,11 +70,18 @@ export interface ChatBotPart {
   partName: string;
 }
 
-export interface ChatBotData {
-  modelId: number;
+export interface ChatBotModel {
   modelName: string;
-  parts: ChatBotPart[];
-  top3Defects: ChatBotDefect[];
+  defectOccurrenceCount: number;
+}
+
+export interface ChatBotData {
+  modelId?: number;
+  modelName?: string;
+  parts?: ChatBotPart[];
+  top3Defects?: ChatBotDefect[];
+  defectSearchTerm?: string;
+  top5Models?: ChatBotModel[];
 }
 
 export interface ChatBotApiResponse {

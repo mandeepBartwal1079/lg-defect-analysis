@@ -1,0 +1,111 @@
+<div class="log-header">
+  <div class="log-title">
+    <!-- [!] CRITICAL ERROR LOG (LIVE)
+    @if (sharedService.currentFilters() && (sharedService.currentFilters().from ||
+    sharedService.currentFilters().to || sharedService.currentFilters().code)) {
+    <span class="filter-badge">Filtered</span>
+    } -->
+  </div>
+  <div class="header-actions">
+    <button class="filter-toggle-btn" (click)="toggleFilters()" [class.active]="showFilters()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M2 4.5H16M5 9H13M7.5 13.5H10.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      Filters
+    </button>
+  </div>
+</div>
+
+<!-- Filter Panel -->
+@if (showFilters()) {
+<div class="filter-panel">
+  <div class="filter-row">
+    <!-- Search Input -->
+    <div class="filter-group">
+      <label class="filter-label"></label>
+      <div class="search-input-wrapper">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="2" />
+          <path d="M11 11L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <input type="text" class="filter-input" placeholder="Search by Model Name..." [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)" (keyup.enter)="applyFilters()" />
+        @if (searchQuery()) {
+        <button class="clear-input-btn" (click)="searchQuery.set('')">
+          <svg width="14" height="14" viewBox="0 0 14 14">
+            <path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        }
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label"></label>
+      <div class="search-input-wrapper">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="2" />
+          <path d="M11 11L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <input type="text" class="filter-input" placeholder="Search by Production line..." [value]="productionLineQuery()"
+          (input)="productionLineQuery.set($any($event.target).value)" (keyup.enter)="applyFilters()" />
+        @if (productionLineQuery()) {
+        <button class="clear-input-btn" (click)="productionLineQuery.set('')">
+          <svg width="14" height="14" viewBox="0 0 14 14">
+            <path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        }
+      </div>
+    </div>
+
+    <!-- Date Range -->
+   <!-- Replace the entire date range filter-group with this -->
+<div class="filter-group">
+  <label class="filter-label">Date</label>
+  <div class="select-wrapper">
+    <svg class="select-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
+      <path d="M5 1V3M11 1V3M2 6H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <select
+      class="filter-input filter-select"
+      [value]="selectedDay()"
+      (change)="selectedDay.set($any($event.target).value)">
+      <option value="today">Today ({{ formatDate(today) }})</option>
+      <option value="tomorrow">Tomorrow ({{ formatDate(tomorrow) }})</option>
+    </select>
+    @if (selectedDay()) {
+      <button class="clear-input-btn" (click)="selectedDay.set('')">
+        <svg width="14" height="14" viewBox="0 0 14 14">
+          <path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    }
+  </div>
+</div>
+    <!-- Action Buttons -->
+    <div class="filter-group filter-actions">
+      <label class="filter-label">&nbsp;</label>
+      <div class="button-group">
+        <button class="apply-filters-btn" (click)="applyFilters()" [disabled]="!hasActiveFilters()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M13 4L6 11L3 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          Apply
+        </button>
+        @if (sharedService.currentFilters() && (sharedService.currentFilters().modelNumber ||
+        sharedService.currentFilters().productionLine || sharedService.currentFilters().date)) {
+        <button class="clear-filters-btn" (click)="clearFilters()">
+          <svg width="16" height="16" viewBox="0 0 16 16">
+            <path d="M3 3L13 13M3 13L13 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          Clear
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}

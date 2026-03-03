@@ -87,6 +87,7 @@
 
       <div class="message-content">
         <!-- Plain text bubble -->
+        @if (!message.botData || (!message.botData.top5Models && !message.botData.top3Defects)) {
         <div class="message-bubble" [class.html-message]="message.isHtml">
           @if (message.isHtml) {
           <span [innerHTML]="message.text | safeHtml"></span>
@@ -94,17 +95,20 @@
           {{ message.text }}
           }
         </div>
+        }
 
         <!-- Rich defect data card -->
         @if (message.botData) {
         <div class="defect-card">
+          <!-- Response Type 1: Model + Part + Top 3 Defects -->
+          @if (message.botData.modelName) {
           <!-- Model + Part -->
           <div class="defect-card-header">
             <div class="dc-row">
               <span class="dc-label">Model</span>
               <span class="dc-value">{{ message.botData.modelName }}</span>
             </div>
-            @if (message.botData.parts.length) {
+            @if (message.botData.parts && message.botData.parts.length) {
             @for (part of message.botData.parts; track part.partId) {
             <div class="dc-row">
               <span class="dc-label">Part</span>
@@ -115,28 +119,46 @@
           </div>
 
           <!-- Top 3 Defects -->
-          @if (message.botData.top3Defects.length) {
+          @if (message.botData.top3Defects && message.botData.top3Defects.length) {
           <div class="defects-section">
-            <div class="defects-title">Top 3 Defects</div>
+            <div class="defects-title">Defects</div>
             @for (defect of message.botData.top3Defects; track defect.defectName; let i = $index) {
             <div class="defect-item">
               <span class="defect-rank">{{ i + 1 }}</span>
               <div class="defect-body">
                 <div class="defect-name">{{ defect.defectName }}</div>
-                <!-- <div class="dc-row"><span class="dc-label">Lv1</span><span class="dc-value">{{ defect.defectLv1
-                    }}</span></div>
-                <div class="dc-row"><span class="dc-label">Lv2</span><span class="dc-value">{{ defect.defectLv2
-                    }}</span></div>
-                <div class="dc-row"><span class="dc-label">Lv3</span><span class="dc-value">{{ defect.defectLv3
-                    }}</span></div>
-                <div class="dc-row"><span class="dc-label">Line</span><span class="dc-value">{{ defect.productionLine
-                    }}</span></div>
-                <div class="dc-row"><span class="dc-label">Qty</span><span class="dc-value">{{ defect.totalQty }}</span>
-                </div> -->
               </div>
             </div>
             }
           </div>
+          }
+          }
+
+          <!-- Response Type 2: Defect Search Term + Top 5 Models -->
+          @if (message.botData.defectSearchTerm) {
+          <!-- Defect Search Term -->
+          <div class="defect-card-header">
+            <div class="dc-row">
+              <span class="dc-label">Defect</span>
+              <span class="dc-value">{{ message.botData.defectSearchTerm }}</span>
+            </div>
+          </div>
+
+          <!-- Top Models -->
+          @if (message.botData.top5Models && message.botData.top5Models.length) {
+          <div class="defects-section">
+            <div class="defects-title">Top Models</div>
+            @for (model of message.botData.top5Models; track model.modelName; let i = $index) {
+            <div class="defect-item">
+              <span class="defect-rank">{{ i + 1 }}</span>
+              <div class="defect-body">
+                <div class="defect-name">Model Name: {{ model.modelName }}</div>
+                <div class="defect-meta">Defect Occurrences: {{ model.defectOccurrenceCount }}</div>
+              </div>
+            </div>
+            }
+          </div>
+          }
           }
         </div>
         }
