@@ -17,10 +17,7 @@
       <span class="label">Remaining</span>
       <span class="value highlight">{{ plan().remainingQty }}</span>
     </div>
-    <div class="info-item">
-      <span class="label">Daily</span>
-      <span class="value">{{ plan().dailyProductionQuantity }}</span>
-    </div>
+
   </div>
 
   <div class="defects-section" *ngIf="displayDefects().length > 0">
@@ -34,10 +31,10 @@
           <span class="lv-sep">></span>
           <span class="lv3">{{ defect.defectLv3 }}</span>
         </div>
-        <div class="defect-meta">
+        <!-- <div class="defect-meta">
           <span class="qty">Qty: {{ defect.defectQty }}</span>
-          <!-- <span class="process">{{ defect.detectedProcess }}</span> -->
-        </div>
+          <span class="process">{{ defect.detectedProcess }}</span>
+        </div> -->
       </div>
     </div>
   </div>
