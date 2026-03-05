@@ -49,7 +49,6 @@ export class Dashboard {
   filteredPlans = computed(() => {
     const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
     const filters = this.sharedService.currentFilters();
-    console.log(filters, 'jjkfhdkjsfksdkjfknsdk');
     return this.plans().filter(plan => {
       if (!plan.productionStartDate) return false;
       const planDate = plan.productionStartDate.split('T')[0];
