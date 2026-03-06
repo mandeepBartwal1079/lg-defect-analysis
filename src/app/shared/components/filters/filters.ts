@@ -20,15 +20,10 @@ export class Filters {
     return date.toISOString().split('T')[0];
   }
 
-  // Computed date string based on dropdown selection
-  selectedDate = computed<string>(() => {
-    const now = new Date();
-    if (this.selectedDay() === 'today') return this.formatDate(now);
-    if (this.selectedDay() === 'tomorrow') {
-      const tomorrow = new Date(now);
-      tomorrow.setDate(now.getDate() + 1);
-      return this.formatDate(tomorrow);
-    }
+  // Computed date value based on dropdown selection
+  selectedDate = computed<string | null>(() => {
+    if (this.selectedDay() === 'today') return null;
+    if (this.selectedDay() === 'tomorrow') return 'tomorrow';
     return '';
   });
 
@@ -40,7 +35,8 @@ export class Filters {
     const filters: any = {};
     if (this.searchQuery().trim()) filters.modelNumber = this.searchQuery().trim();
     if (this.productionLineQuery().trim()) filters.productionLine = this.productionLineQuery().trim();
-    if (this.selectedDate()) filters.date = this.selectedDate(); // e.g. '2026-03-12'
+    const dateValue = this.selectedDate();
+    if (dateValue !== '') filters.date = dateValue;
     this.sharedService.applyFilters(filters);
   }
 

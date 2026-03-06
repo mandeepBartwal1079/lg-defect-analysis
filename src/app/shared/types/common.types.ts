@@ -104,5 +104,5 @@ export interface Data {
   occurrenceCount: number
   occurrencesDisplay: string
   resolutionDate: string
-  resolutionSteps: any[]
+  resolutionSteps: string[]
 }

@@ -105,7 +105,7 @@ export class Dashboard {
     } else if (width < 2000) {
       maxCols = 5; // tv
     } else {
-      maxCols = 6; // and above
+      maxCols = 5; // and above
     }
     return Math.min(n, maxCols);
   });
