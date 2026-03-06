@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
-import { ApiResponse, DefectModalDataI } from '../types/common.types';
+import { ApiResponse, DefectModalDataI, LgApiResponse } from '../types/common.types';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -17,17 +17,9 @@ export class Shared {
   ) { }
 
   getCurrentProductionPlans(filters?: any) {
-    let params = new HttpParams();
-
-    if (filters?.modelNumber) params = params.set('modelNumber', filters.modelNumber);
-    if (filters?.productionLine) params = params.set('productionLine', filters.productionLine);
-    if (filters?.date) params = params.set('forDate', filters.date);
-
-    return this._httpClient.get<ApiResponse>(
-      `${environment.apiUrl}Master/GetTodayProductionPlansWithModelDetails`,
-      { params }
-    );
+    return this._httpClient.get<LgApiResponse>('Json/api.json');
   }
+
   getChatBotResponse(query: string) {
     return this._httpClient.get<ApiResponse>(`${environment.apiUrl}ChatBot/Chat?query=${query}`);
   }
