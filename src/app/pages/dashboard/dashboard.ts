@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal, DestroyRef, computed, effect } from '@angular/core';
+import { Component, inject, signal, DestroyRef, computed, effect, HostListener } from '@angular/core';
 import { Header } from '../../shared/components/header/header';
 import { ChatBot } from '../../shared/components/chat-bot/chat-bot';
 import { Shared } from '../../shared/services/shared';
@@ -22,6 +22,12 @@ export class Dashboard {
   plans = signal<Plan[]>([]);
   isModalOpen = signal(false);
   selectedDefectDetail = signal<DefectModalDataI | null>(null);
+  windowWidth = signal(window.innerWidth);
+
+  @HostListener('window:resize')
+  onResize() {
+    this.windowWidth.set(window.innerWidth);
+  }
 
   currentTodayDate = computed(() => {
     return new Date().toLocaleDateString();
@@ -86,10 +92,21 @@ export class Dashboard {
   }
 
   protected gridCols = computed(() => {
+    const width = this.windowWidth();
     const n = this.filteredPlans().length;
-    if (n <= 4)  return n;              // 1 row  (1–4 cards)
-    if (n <= 10) return Math.ceil(n / 2); // 2 rows (5–10 cards)
-    if (n <= 18) return Math.ceil(n / 3); // 3 rows (11–18 cards)
-    return Math.min(Math.ceil(n / 4), 6); // 4 rows, max 6 cols (19+ cards)
+
+    let maxCols = 4;
+    if (width < 480) {
+      maxCols = 1; // mobile
+    } else if (width < 1024) {
+      maxCols = 2; // tablet
+    } else if (width < 1400) {
+      maxCols = 4; // laptop & desktop
+    } else if (width < 2000) {
+      maxCols = 5; // tv
+    } else {
+      maxCols = 6; // and above
+    }
+    return Math.min(n, maxCols);
   });
 }

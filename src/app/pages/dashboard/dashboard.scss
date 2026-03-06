@@ -31,15 +31,6 @@
 
 /* Web-first: desktop grid – 3–4 columns, cards use full width */
 .defects-grid {
-  // flex: 1;
-  // min-height: 0;
-  // height: 100%;        // ← fills the flex parent's resolved height
-  // display: grid;
-  // grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  // grid-auto-rows: 1fr;
-  // gap: clamp(12px, 1.2vw, 24px);
-  // align-content: stretch;
-
   flex: 1;
   min-height: 0;
   height: 100%;
@@ -69,7 +60,7 @@
   }
 
   .defects-grid {
-    grid-template-columns: repeat(3, 1fr); // 3 columns on tablet
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
 }

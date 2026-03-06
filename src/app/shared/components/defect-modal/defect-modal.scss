@@ -232,54 +232,6 @@
   border-color: rgba(59, 130, 246, 0.3);
 }
 
-/* Checkbox styles */
-.checkbox {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-}
-
-.checkbox input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.checkbox label {
-  display: block;
-  width: 24px;
-  height: 24px;
-  border: 2px solid #64748b;
-  border-radius: 6px;
-  background: rgba(15, 23, 42, 0.8);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.checkbox label:hover {
-  border-color: #10b981;
-}
-
-.checkbox input:checked+label {
-  background: #10b981;
-  border-color: #10b981;
-}
-
-.checkbox input:checked+label svg {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.checkbox label svg {
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.2s ease;
-}
 
 .step-content {
   flex: 1;
@@ -294,73 +246,6 @@
   color: #e2e8f0;
   line-height: 1.5;
   word-wrap: break-word;
-}
-
-.additional-badge {
-  display: inline-block;
-  background: rgba(59, 130, 246, 0.2);
-  color: #3b82f6;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  align-self: flex-start;
-}
-
-/* Completion status */
-.completion-status {
-  font-size: 12px;
-  font-weight: 500;
-  padding: 4px 12px;
-  border-radius: 12px;
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.completion-status.completed {
-  background: rgba(16, 185, 129, 0.2);
-  color: #10b981;
-}
-
-/* Manuals */
-.manuals-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.manual-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  background: rgba(15, 23, 42, 0.6);
-  border-radius: 6px;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  color: #10b981;
-  text-decoration: none;
-  font-size: 13px;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-.manual-link:hover {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.4);
-  transform: translateX(4px);
-}
-
-.manual-link svg {
-  flex-shrink: 0;
-}
-
-.manual-link span {
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* Resolution options */
