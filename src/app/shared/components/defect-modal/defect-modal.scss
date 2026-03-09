@@ -101,8 +101,8 @@
 
 .modal-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-  gap: 24px;
+  // grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  // gap: 24px;
   padding: 24px;
 }
 
@@ -148,9 +148,10 @@
 }
 
 .info-grid {
-  display: flex;
+  display: grid;
   flex-direction: column;
   gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .info-item {

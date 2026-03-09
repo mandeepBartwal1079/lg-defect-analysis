@@ -23,6 +23,7 @@
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: clamp(6px, 0.8vw, 10px);
+  gap: clamp(6px, 0.8vw, 12px);
 
   .model-name {
     font-size: clamp(16px, 1.6vw, 22px);
@@ -32,6 +33,29 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+  }
+
+  .plan-id {
+    font-size: clamp(10px, 0.8vw, 12px);
+    font-weight: 600;
+    padding: clamp(3px, 0.4vw, 6px) clamp(6px, 0.6vw, 10px);
+    background: rgba(130, 170, 255, 0.15);
+    border: 1px solid rgba(130, 170, 255, 0.3);
+    border-radius: 4px;
+    color: #82aaff;
+    white-space: nowrap;
+  }
+
+  .plan-tool {
+    font-size: clamp(10px, 0.8vw, 12px);
+    font-weight: 600;
+    padding: clamp(3px, 0.4vw, 6px) clamp(6px, 0.6vw, 10px);
+    background: rgba(195, 232, 141, 0.15);
+    border: 1px solid rgba(195, 232, 141, 0.3);
+    border-radius: 4px;
+    color: #c3e88d;
+    white-space: nowrap;
   }
 }
 

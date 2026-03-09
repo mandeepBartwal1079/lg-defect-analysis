@@ -1,10 +1,15 @@
 <article class="defect-card" (click)="openPlanDetails()">
   <div class="card-header">
     <h3 class="model-name">{{ plan().modelNumber || 'Unknown Model' }}</h3>
+    @if (plan().productionLine) {
     <span class="plan-id">{{ plan().productionLine }}</span>
+    }
+    @if (plan().tool) {
+    <span class="plan-tool">{{ plan().tool }}</span>
+    }
   </div>
 
-  <div class="production-info">
+  <!-- <div class="production-info">
     <div class="info-item">
       <span class="label">Total</span>
       <span class="value">{{ plan().totalQuantity }}</span>
@@ -18,28 +23,29 @@
       <span class="value highlight">{{ plan().remainingQty }}</span>
     </div>
 
-  </div>
+  </div> -->
 
-  <div class="defects-section" *ngIf="displayDefects().length > 0">
-    <h4 class="section-title">Defects (First 3)</h4>
+  @if (plan().top5Defects.length > 0) {
+  <div class="defects-section" >
+    <!-- <h4 class="section-title">Defects (First 3)</h4> -->
     <div class="defect-list">
-      <div class="defect-item" *ngFor="let defect of displayDefects()">
+      @for (defect of plan().top5Defects; track defect.defectName) {
+      <div class="defect-item">
         <div class="defect-levels">
-          <span class="lv1">{{ defect.defectLv1 }}</span>
-          <span class="lv-sep">></span>
-          <span class="lv2">{{ defect.defectLv2 }}</span>
-          <span class="lv-sep">></span>
-          <span class="lv3">{{ defect.defectLv3 }}</span>
+          <span class="lv3">{{ defect.defectName }}</span>
         </div>
-        <!-- <div class="defect-meta">
-          <span class="qty">Qty: {{ defect.defectQty }}</span>
-          <span class="process">{{ defect.detectedProcess }}</span>
-        </div> -->
+        <div class="defect-meta">
+          <span class="qty">Qty: {{ defect.count }}</span>
+          <span class="percentage">{{ defect.percentage }}%</span>
+        </div>
       </div>
+    }
     </div>
   </div>
-
-  <div class="no-defects" *ngIf="displayDefects().length === 0">
+  }
+  @else {
+  <div class="no-defects">
     No defects recorded
   </div>
+}
 </article>

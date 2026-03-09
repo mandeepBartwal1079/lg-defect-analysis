@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
-import { ApiResponse, DefectModalDataI } from '../types/common.types';
+import { ApiResponse, DefectModalDataI, ModelNamesResponse } from '../types/common.types';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class Shared {
   isLoading = computed(() => this.isLoadingSignal());
   private currentFiltersSignal = signal<any>({});
   currentFilters = computed(() => this.currentFiltersSignal());
-
+  productionLines = signal<string[]>(['PR1', 'PR2', 'PL1', 'PL2', 'PL3', 'UHD', 'L02', 'PWM1', 'PA1', 'PA2', 'PA4', 'PA5']);
   constructor(
     private _httpClient: HttpClient
   ) { }
@@ -34,6 +34,14 @@ export class Shared {
 
   getDefectModalData(modelNumber: string){
     return this._httpClient.get<DefectModalDataI>(`${environment.apiUrl}Master/GetModelDefectDetail?modelNumber=${modelNumber}`);
+  }
+
+  getProductionLines() {
+    return this.productionLines();
+  }
+
+  getModelNames() {
+    return this._httpClient.get<ModelNamesResponse>(`${environment.apiUrl}Master/GetTodayProductionPlanModelNumbers`);
   }
 
   applyFilters(filters: any) {

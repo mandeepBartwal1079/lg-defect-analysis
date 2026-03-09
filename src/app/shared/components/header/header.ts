@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Output, signal, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -8,5 +8,11 @@ import { Component } from '@angular/core';
   styleUrl: './header.scss',
 })
 export class Header {
+  showFilters = signal<boolean>(false);
+  @Output() filterToggle = new EventEmitter<boolean>();
 
+  toggleFilters(): void {
+    this.showFilters.update(show => !show);
+    this.filterToggle.emit(this.showFilters());
+  }
 }

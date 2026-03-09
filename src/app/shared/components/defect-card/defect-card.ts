@@ -23,7 +23,7 @@ export class DefectCard {
       }
     }
 
-    return allDefects.slice(0, 3);
+    return allDefects.slice(0, 5);
   });
 
   openPlanDetails(): void {

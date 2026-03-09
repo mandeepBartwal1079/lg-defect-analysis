@@ -23,6 +23,7 @@ export class Dashboard {
   isModalOpen = signal(false);
   selectedDefectDetail = signal<DefectModalDataI | null>(null);
   windowWidth = signal(window.innerWidth);
+  filtersVisible = signal<boolean>(false);
 
   @HostListener('window:resize')
   onResize() {
@@ -34,8 +35,6 @@ export class Dashboard {
   });
 
  constructor() {
-    // Converts the filters signal to an observable, switchMap cancels
-    // any in-flight request when filters change
     toObservable(this.sharedService.currentFilters)
       .pipe(
         switchMap(filters => this.sharedService.getCurrentProductionPlans(filters)),
@@ -49,6 +48,10 @@ export class Dashboard {
           console.error(response.message);
         }
       });
+  }
+
+  showFilters(show: boolean) {
+    this.filtersVisible.set(show);
   }
 
   // Filter plans to show only those starting today

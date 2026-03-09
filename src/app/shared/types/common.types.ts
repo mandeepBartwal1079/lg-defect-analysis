@@ -7,8 +7,8 @@ export interface ApiResponse {
 export interface Plan {
   planId: number
   modelNumber: string
-  productionLine: string
-  partNumber: string
+  tool?: string
+  productionLine?: string
   productionStartDate: string
   productionEndDate: string
   demandDueDate: string
@@ -21,7 +21,14 @@ export interface Plan {
   daysRemaining: number
   modelId?: number
   modelName?: string
+  top5Defects: Top5Defect[]
   parts: Part[]
+}
+
+export interface Top5Defect {
+  defectName: string
+  count: number
+  percentage: number
 }
 
 export interface Part {
@@ -105,4 +112,14 @@ export interface Data {
   occurrencesDisplay: string
   resolutionDate: string
   resolutionSteps: string[]
+}
+export interface ModelNamesResponse {
+  data: ModelName[]
+  success: boolean
+  message: string
+}
+
+export interface ModelName {
+  id: string
+  name: string
 }
