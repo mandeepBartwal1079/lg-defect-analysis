@@ -123,3 +123,19 @@ export interface ModelName {
   id: string
   name: string
 }
+
+// Tools Response
+export interface ToolsApiResponse {
+  data: Tool[]
+  success: boolean
+  message: string
+}
+
+export interface Tool {
+  tool: string
+  models: string[]
+  totalModels: number
+  productionLines: string[]
+  totalDefects: number
+  top5Defects: Top5Defect[]
+}

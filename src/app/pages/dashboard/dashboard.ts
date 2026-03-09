@@ -3,7 +3,7 @@ import { Component, inject, signal, DestroyRef, computed, effect, HostListener }
 import { Header } from '../../shared/components/header/header';
 import { ChatBot } from '../../shared/components/chat-bot/chat-bot';
 import { Shared } from '../../shared/services/shared';
-import { ApiResponse, DefectModalDataI, Plan } from '../../shared/types/common.types';
+import { ApiResponse, DefectModalDataI, Plan, ToolsApiResponse, Tool } from '../../shared/types/common.types';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DefectCard } from '../../shared/components/defect-card/defect-card';
 import { Filters } from '../../shared/components/filters/filters';
@@ -20,6 +20,7 @@ export class Dashboard {
   sharedService = inject(Shared);
   destroyRef = inject(DestroyRef);
   plans = signal<Plan[]>([]);
+  toolsData = signal<Tool[]>([]);
   isModalOpen = signal(false);
   selectedDefectDetail = signal<DefectModalDataI | null>(null);
   windowWidth = signal(window.innerWidth);
@@ -37,14 +38,27 @@ export class Dashboard {
  constructor() {
     toObservable(this.sharedService.currentFilters)
       .pipe(
-        switchMap(filters => this.sharedService.getCurrentProductionPlans(filters)),
+        switchMap(filters => {
+          if (filters.viewType === 'tools') {
+            return this.sharedService.getCurrentProductionPlansByTool(filters);
+          } else {
+            return this.sharedService.getCurrentProductionPlans(filters);
+          }
+        }),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((response: ApiResponse) => {
+      .subscribe((response: ApiResponse | ToolsApiResponse) => {
         if (response.success) {
-          this.plans.set(response.data);
+          if (this.sharedService.currentFilters().viewType === 'tools') {
+            this.toolsData.set((response as ToolsApiResponse).data);
+            this.plans.set([]);
+          } else {
+            this.plans.set((response as ApiResponse).data);
+            this.toolsData.set([]);
+          }
         } else {
           this.plans.set([]);
+          this.toolsData.set([]);
           console.error(response.message);
         }
       });
@@ -96,7 +110,8 @@ export class Dashboard {
 
   protected gridCols = computed(() => {
     const width = this.windowWidth();
-    const n = this.filteredPlans().length;
+    const isTools = this.sharedService.currentFilters().viewType === 'tools';
+    const n = isTools ? this.toolsData().length : this.filteredPlans().length;
 
     let maxCols = 4;
     if (width < 480) {
@@ -105,11 +120,9 @@ export class Dashboard {
       maxCols = 2; // tablet
     } else if (width < 1400) {
       maxCols = 4; // laptop & desktop
-    } else if (width < 2000) {
-      maxCols = 5; // tv
     } else {
-      maxCols = 5; // and above
+      maxCols = 5; // tv and above
     }
-    return Math.min(n, maxCols);
+    return Math.max(1, Math.min(n, maxCols));
   });
 }

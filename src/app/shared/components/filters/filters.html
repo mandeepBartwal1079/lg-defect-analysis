@@ -1,52 +1,59 @@
 @if (showFilters) {
 <div class="filter-panel">
-  <div class="filter-row">
+  <div class="filter-row" [class.tools-view]="viewType() === 'tools'">
+    <div class="filter-group">
+      <div class="radio-group">
+        <label class="radio-label">
+          <input type="radio" name="viewType" value="models" [checked]="viewType() === 'models'"
+            (change)="setViewType('models')" />
+          <span class="radio-text">Models</span>
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="viewType" value="tools" [checked]="viewType() === 'tools'"
+            (change)="setViewType('tools')" />
+          <span class="radio-text">Tools</span>
+        </label>
+      </div>
+    </div>
     <!-- Model Name Dropdown -->
+    @if (viewType() === 'models') {
     <div class="filter-group">
       <div class="select-wrapper custom-dropdown" [class.open]="modelDropdownOpen()">
         <div class="dropdown-trigger" (click)="toggleModelDropdown()">
           <svg class="select-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 5L8 11L14 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 5L8 11L14 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg>
           <span class="dropdown-value">{{ selectedModel()?.name || 'Select Model Name...' }}</span>
           @if (selectedModel()) {
-            <button class="clear-input-btn" (click)="clearModelSelection(); $event.stopPropagation()">
-              <svg width="14" height="14" viewBox="0 0 14 14">
-                <path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
-            </button>
+          <button class="clear-input-btn" (click)="clearModelSelection(); $event.stopPropagation()">
+            <svg width="14" height="14" viewBox="0 0 14 14">
+              <path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
           }
         </div>
         @if (modelDropdownOpen()) {
-          <div class="dropdown-menu">
-            <div class="dropdown-search">
-              <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="2" />
-                <path d="M11 11L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
-              <input
-                type="text"
-                class="dropdown-search-input"
-                placeholder="Search models..."
-                [value]="modelSearchQuery()"
-                (input)="modelSearchQuery.set($any($event.target).value)"
-                (click)="$event.stopPropagation()"
-              />
-            </div>
-            <div class="dropdown-list">
-              @for (model of filteredModelNames(); track model.id) {
-                <div
-                  class="dropdown-item"
-                  [class.selected]="selectedModel()?.id === model.id"
-                  (click)="selectModel(model)">
-                  {{ model.name }}
-                </div>
-              }
-              @if (filteredModelNames().length === 0) {
-                <div class="dropdown-item no-results">No models found</div>
-              }
-            </div>
+        <div class="dropdown-menu">
+          <div class="dropdown-search">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="2" />
+              <path d="M11 11L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <input type="text" class="dropdown-search-input" placeholder="Search models..." [value]="modelSearchQuery()"
+              (input)="modelSearchQuery.set($any($event.target).value)" (click)="$event.stopPropagation()" />
           </div>
+          <div class="dropdown-list">
+            @for (model of filteredModelNames(); track model.id) {
+            <div class="dropdown-item" [class.selected]="selectedModel()?.id === model.id" (click)="selectModel(model)">
+              {{ model.name }}
+            </div>
+            }
+            @if (filteredModelNames().length === 0) {
+            <div class="dropdown-item no-results">No models found</div>
+            }
+          </div>
+        </div>
         }
       </div>
     </div>
@@ -56,75 +63,112 @@
       <div class="select-wrapper custom-dropdown" [class.open]="productionLineDropdownOpen()">
         <div class="dropdown-trigger" (click)="toggleProductionLineDropdown()">
           <svg class="select-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 5L8 11L14 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 5L8 11L14 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
           </svg>
           <span class="dropdown-value">{{ selectedProductionLine() || 'Select Production Line...' }}</span>
           @if (selectedProductionLine()) {
-            <button class="clear-input-btn" (click)="clearProductionLineSelection(); $event.stopPropagation()">
-              <svg width="14" height="14" viewBox="0 0 14 14">
-                <path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
-            </button>
+          <button class="clear-input-btn" (click)="clearProductionLineSelection(); $event.stopPropagation()">
+            <svg width="14" height="14" viewBox="0 0 14 14">
+              <path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
           }
         </div>
         @if (productionLineDropdownOpen()) {
-          <div class="dropdown-menu">
-            <div class="dropdown-search">
-              <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="2" />
-                <path d="M11 11L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
-              <input
-                type="text"
-                class="dropdown-search-input"
-                placeholder="Search production lines..."
-                [value]="productionLineSearchQuery()"
-                (input)="productionLineSearchQuery.set($any($event.target).value)"
-                (click)="$event.stopPropagation()"
-              />
-            </div>
-            <div class="dropdown-list">
-              @for (line of filteredProductionLines(); track line) {
-                <div
-                  class="dropdown-item"
-                  [class.selected]="selectedProductionLine() === line"
-                  (click)="selectProductionLine(line)">
-                  {{ line }}
-                </div>
-              }
-              @if (filteredProductionLines().length === 0) {
-                <div class="dropdown-item no-results">No production lines found</div>
-              }
-            </div>
+        <div class="dropdown-menu">
+          <div class="dropdown-search">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="2" />
+              <path d="M11 11L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <input type="text" class="dropdown-search-input" placeholder="Search production lines..."
+              [value]="productionLineSearchQuery()" (input)="productionLineSearchQuery.set($any($event.target).value)"
+              (click)="$event.stopPropagation()" />
           </div>
+          <div class="dropdown-list">
+            @for (line of filteredProductionLines(); track line) {
+            <div class="dropdown-item" [class.selected]="selectedProductionLine() === line"
+              (click)="selectProductionLine(line)">
+              {{ line }}
+            </div>
+            }
+            @if (filteredProductionLines().length === 0) {
+            <div class="dropdown-item no-results">No production lines found</div>
+            }
+          </div>
+        </div>
         }
       </div>
     </div>
+    }
+
+    <!-- Tool Dropdown -->
+    @if (viewType() === 'tools') {
+    <div class="filter-group tool-filter">
+      <div class="select-wrapper custom-dropdown" [class.open]="toolDropdownOpen()">
+        <div class="dropdown-trigger" (click)="toggleToolDropdown()">
+          <svg class="select-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 5L8 11L14 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+          <span class="dropdown-value">{{ selectedTool() || 'Select Tool...' }}</span>
+          @if (selectedTool()) {
+          <button class="clear-input-btn" (click)="clearToolSelection(); $event.stopPropagation()">
+            <svg width="14" height="14" viewBox="0 0 14 14">
+              <path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
+          }
+        </div>
+        @if (toolDropdownOpen()) {
+        <div class="dropdown-menu">
+          <div class="dropdown-search">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="2" />
+              <path d="M11 11L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <input type="text" class="dropdown-search-input" placeholder="Search tools..." [value]="toolSearchQuery()"
+              (input)="toolSearchQuery.set($any($event.target).value)" (click)="$event.stopPropagation()" />
+          </div>
+          <div class="dropdown-list">
+            @for (tool of filteredTools(); track tool) {
+            <div class="dropdown-item" [class.selected]="selectedTool() === tool" (click)="selectTool(tool)">
+              {{ tool }}
+            </div>
+            }
+            @if (filteredTools().length === 0) {
+            <div class="dropdown-item no-results">No tools found</div>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
 
     <!-- Date Range -->
-   <!-- Replace the entire date range filter-group with this -->
-<div class="filter-group">
-  <div class="select-wrapper">
-    <svg class="select-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
-      <path d="M5 1V3M11 1V3M2 6H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-    <select
-      class="filter-input filter-select"
-      [value]="selectedDay()"
-      (change)="selectedDay.set($any($event.target).value)">
-      <option value="today">Today ({{ formatDate(today) }})</option>
-      <option value="tomorrow">Tomorrow ({{ formatDate(tomorrow) }})</option>
-    </select>
-    @if (selectedDay()) {
-      <button class="clear-input-btn" (click)="selectedDay.set('')">
-        <svg width="14" height="14" viewBox="0 0 14 14">
-          <path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <!-- Replace the entire date range filter-group with this -->
+    <div class="filter-group">
+      <div class="select-wrapper">
+        <svg class="select-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2" />
+          <path d="M5 1V3M11 1V3M2 6H14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
         </svg>
-      </button>
-    }
-  </div>
-</div>
+        <select class="filter-input filter-select" [value]="selectedDay()"
+          (change)="selectedDay.set($any($event.target).value)">
+          <option value="today">Today ({{ formatDate(today) }})</option>
+          <option value="tomorrow">Tomorrow ({{ formatDate(tomorrow) }})</option>
+        </select>
+        @if (selectedDay()) {
+        <button class="clear-input-btn" (click)="selectedDay.set('')">
+          <svg width="14" height="14" viewBox="0 0 14 14">
+            <path d="M3 3L11 11M3 11L11 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        }
+      </div>
+    </div>
     <!-- Action Buttons -->
     <div class="filter-group filter-actions">
       <div class="button-group">
@@ -136,7 +180,7 @@
           Apply
         </button>
         @if (sharedService.currentFilters() && (sharedService.currentFilters().modelNumber ||
-        sharedService.currentFilters().productionLine || sharedService.currentFilters().date)) {
+        sharedService.currentFilters().productionLine || sharedService.currentFilters().tool || sharedService.currentFilters().date)) {
         <button class="clear-filters-btn" (click)="clearFilters()">
           <svg width="16" height="16" viewBox="0 0 16 16">
             <path d="M3 3L13 13M3 13L13 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />

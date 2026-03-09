@@ -17,12 +17,17 @@ export class Filters {
   selectedDay = signal<'today' | 'tomorrow' | ''>('');
   readonly today = new Date();
   readonly tomorrow = (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d; })();
-  
+  // View type (Models or Tools)
+  viewType = signal<'models' | 'tools'>('models');
+
   // Model dropdown states
   selectedModel = signal<ModelName | null>(null);
   modelDropdownOpen = signal<boolean>(false);
   modelSearchQuery = signal<string>('');
-  
+  // Tool dropdown states
+  selectedTool = signal<string>('');
+  toolDropdownOpen = signal<boolean>(false);
+  toolSearchQuery = signal<string>('');
   // Production line dropdown states
   selectedProductionLine = signal<string>('');
   productionLineDropdownOpen = signal<boolean>(false);
@@ -54,6 +59,15 @@ export class Filters {
     return lines.filter(line => line.toLowerCase().includes(query));
   });
 
+  toolsData = computed(() => this.sharedService.getTools());
+
+  filteredTools = computed(() => {
+    const query = this.toolSearchQuery().toLowerCase();
+    const tools = this.toolsData();
+    if (!query) return tools;
+    return tools.filter(tool => tool.toLowerCase().includes(query));
+  });
+
   selectedDate = computed<string | null>(() => {
     if (this.selectedDay() === 'today') return null;
     if (this.selectedDay() === 'tomorrow') return 'tomorrow';
@@ -71,6 +85,15 @@ export class Filters {
     this.productionLineDropdownOpen.update(open => !open);
     if (this.productionLineDropdownOpen()) {
       this.modelDropdownOpen.set(false);
+      this.toolDropdownOpen.set(false);
+    }
+  }
+
+  toggleToolDropdown(): void {
+    this.toolDropdownOpen.update(open => !open);
+    if (this.toolDropdownOpen()) {
+      this.modelDropdownOpen.set(false);
+      this.productionLineDropdownOpen.set(false);
     }
   }
 
@@ -86,6 +109,12 @@ export class Filters {
     this.productionLineSearchQuery.set('');
   }
 
+  selectTool(tool: string): void {
+    this.selectedTool.set(tool);
+    this.toolDropdownOpen.set(false);
+    this.toolSearchQuery.set('');
+  }
+
   clearModelSelection(): void {
     this.selectedModel.set(null);
     this.modelSearchQuery.set('');
@@ -96,42 +125,79 @@ export class Filters {
     this.productionLineSearchQuery.set('');
   }
 
+  clearToolSelection(): void {
+    this.selectedTool.set('');
+    this.toolSearchQuery.set('');
+  }
+
+  setViewType(type: 'models' | 'tools'): void {
+    this.viewType.set(type);
+    if (type === 'tools') {
+      this.selectedModel.set(null);
+      this.selectedProductionLine.set('');
+    } else {
+      this.selectedTool.set('');
+    }
+    this.applyFilters();
+  }
+
   applyFilters(): void {
-    const filters: any = {};
-    if (this.selectedModel()) filters.modelNumber = this.selectedModel()!.name;
-    if (this.selectedProductionLine()) filters.productionLine = this.selectedProductionLine();
+    const filters: any = {
+      viewType: this.viewType()
+    };
+
+    if (this.viewType() === 'models') {
+      if (this.selectedModel()) filters.modelNumber = this.selectedModel()!.name;
+      if (this.selectedProductionLine()) filters.productionLine = this.selectedProductionLine();
+    } else {
+      if (this.selectedTool()) filters.tool = this.selectedTool();
+    }
     const dateValue = this.selectedDate();
     if (dateValue !== '') filters.date = dateValue;
     this.sharedService.applyFilters(filters);
     this.modelDropdownOpen.set(false);
+    this.toolDropdownOpen.set(false);
     this.productionLineDropdownOpen.set(false);
+    this.toolDropdownOpen.set(false);
+
   }
 
   clearFilters(): void {
     this.selectedModel.set(null);
     this.selectedProductionLine.set('');
+    this.selectedTool.set('');
     this.selectedDay.set('');
     this.modelSearchQuery.set('');
     this.productionLineSearchQuery.set('');
+    this.toolSearchQuery.set('');
+    this.viewType.set('models');
     this.sharedService.clearFilters();
   }
 
   hasActiveFilters(): boolean {
-    return (
-      this.selectedModel() !== null ||
-      this.selectedProductionLine() !== '' ||
-      this.selectedDay() !== ''
-    );
+    if (this.viewType() === 'models') {
+      return (
+        this.selectedModel() !== null ||
+        this.selectedProductionLine() !== '' ||
+        this.selectedDay() !== ''
+      );
+    } else {
+      return (
+        this.selectedTool() !== '' ||
+        this.selectedDay() !== ''
+      );
+    }
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
     const clickedInside = target.closest('.custom-dropdown');
-    
+
     if (!clickedInside) {
       this.modelDropdownOpen.set(false);
       this.productionLineDropdownOpen.set(false);
+      this.toolDropdownOpen.set(false);
     }
   }
 

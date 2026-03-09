@@ -33,12 +33,16 @@
   }
 }
 
-// 4-column layout: model | production line | date | actions
+// 5-column layout: radio | model | production line | date | actions
 .filter-row {
   display: grid;
-  grid-template-columns: 2fr 2fr 1.2fr auto;
+  grid-template-columns: auto 1.5fr 1.5fr 1fr auto;
   gap: 12px;
-  align-items: end;
+  align-items: center;
+
+  &.tools-view {
+    grid-template-columns: auto 2fr 1.2fr auto;
+  }
 }
 
 .filter-group {
@@ -54,6 +58,40 @@
   color: #64748b;
   font-weight: 600;
   letter-spacing: 0.5px;
+}
+
+// ============================================
+// RADIO GROUP
+// ============================================
+
+.radio-group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #e2e8f0;
+  font-size: 13px;
+
+  input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #f63b57;
+  }
+
+  .radio-text {
+    user-select: none;
+  }
+
+  &:hover .radio-text {
+    color: #f1f5f9;
+  }
 }
 
 // ============================================
