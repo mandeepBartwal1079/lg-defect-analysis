@@ -51,5 +51,5 @@ jobs:
         with:
           app-name: 'ZoumaPulse'
           slot-name: 'Production'
-          package: .
+          package: node-app
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E26D3CADFB7B4D5BB0855A93FD0D6468 }}
