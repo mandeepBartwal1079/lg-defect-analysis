@@ -2,7 +2,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
 import { ApiResponse, DefectModalDataI, ModelNamesResponse, ToolsApiResponse } from '../types/common.types';
 import { environment } from '../../../../environments/environment';
-
 @Injectable({
   providedIn: 'root',
 })
