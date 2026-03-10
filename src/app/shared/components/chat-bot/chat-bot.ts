@@ -181,6 +181,9 @@ export class ChatBot {
     }
   }
 
+
+
+
   getDefectColor(index: number): string {
     const colors = ['#F04E81', '#A50034', '#FF7A9C'];
     return colors[index % colors.length];
