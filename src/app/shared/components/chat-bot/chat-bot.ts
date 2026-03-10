@@ -135,6 +135,9 @@ export class ChatBot {
     });
   }
 
+
+
+
   openFileLink(url: string, event?: Event): void {
     if (event) {
       event.preventDefault();
