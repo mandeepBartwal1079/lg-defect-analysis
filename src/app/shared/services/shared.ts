@@ -67,4 +67,8 @@ export class Shared {
   clearFilters() {
     this.currentFiltersSignal.set({ viewType: 'models' });
   }
+
+  hello(){
+    return 'nhfdfsd'
+  }
 }
