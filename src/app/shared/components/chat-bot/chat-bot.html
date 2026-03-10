@@ -160,6 +160,45 @@
           </div>
           }
           }
+
+          <!-- Response Type 3: Defects Array -->
+          @if (message.botData.defects && message.botData.defects.length) {
+          <div class="defects-section">
+            <div class="defects-title">Defects</div>
+            @for (defect of message.botData.defects; track defect; let i = $index) {
+            <div class="defect-item">
+              <span class="defect-rank">{{ i + 1 }}</span>
+              <div class="defect-body">
+                <div class="defect-name">{{ defect }}</div>
+              </div>
+            </div>
+            }
+          </div>
+          }
+
+          <!-- Response Type 4: Models Array (only modelName) -->
+          @if (message.botData.models && message.botData.models.length) {
+          @if (message.botData.defectName) {
+          <div class="defect-card-header">
+            <div class="dc-row">
+              <span class="dc-label">Defect</span>
+              <span class="dc-value">{{ message.botData.defectName }}</span>
+            </div>
+          </div>
+          }
+          
+          <div class="defects-section">
+            <div class="defects-title">Models</div>
+            @for (model of message.botData.models; track model.modelName; let i = $index) {
+            <div class="defect-item">
+              <span class="defect-rank">{{ i + 1 }}</span>
+              <div class="defect-body">
+                <div class="defect-name">{{ model.modelName }}</div>
+              </div>
+            </div>
+            }
+          </div>
+          }
         </div>
         }
 

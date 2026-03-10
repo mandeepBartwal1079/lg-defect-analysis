@@ -18,7 +18,7 @@ export class Filters {
   readonly today = new Date();
   readonly tomorrow = (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d; })();
   // View type (Models or Tools)
-  viewType = signal<'models' | 'tools'>('models');
+  viewType = signal<'models' | 'tools'>('tools');
 
   // Model dropdown states
   selectedModel = signal<ModelName | null>(null);
@@ -170,7 +170,7 @@ export class Filters {
     this.modelSearchQuery.set('');
     this.productionLineSearchQuery.set('');
     this.toolSearchQuery.set('');
-    this.viewType.set('models');
+    this.viewType.set('tools');
     this.sharedService.clearFilters();
   }
 

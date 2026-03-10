@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 export class Shared {
   private isLoadingSignal = signal<boolean>(false);
   isLoading = computed(() => this.isLoadingSignal());
-  currentFiltersSignal = signal<any>({ viewType: 'models' });
+  currentFiltersSignal = signal<any>({ viewType: 'tools' });
   currentFilters = computed(() => this.currentFiltersSignal());
   productionLines = signal<string[]>(['PR1', 'PR2', 'PL1', 'PL2', 'PL3', 'UHD', 'L02', 'PWM1', 'PA1', 'PA2', 'PA4', 'PA5']);
   tools = signal<string[]>(['AL7', 'VS4', 'VT6', 'VT7']);
@@ -66,6 +66,6 @@ export class Shared {
   }
 
   clearFilters() {
-    this.currentFiltersSignal.set({ viewType: 'models' });
+    this.currentFiltersSignal.set({ viewType: 'tools' });
   }
 }

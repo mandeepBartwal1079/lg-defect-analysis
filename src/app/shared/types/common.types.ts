@@ -89,6 +89,13 @@ export interface ChatBotData {
   top3Defects?: ChatBotDefect[];
   defectSearchTerm?: string;
   top5Models?: ChatBotModel[];
+  defects?: string[];
+  models?: defectModel[];
+  defectName?: string;
+}
+export interface defectModel {
+  modelName: string;
+  defectOccurrenceCount: number;
 }
 
 export interface ChatBotApiResponse {

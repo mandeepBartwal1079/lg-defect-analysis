@@ -104,6 +104,8 @@ export class ChatBot {
   }
 
   private callChatBotApi(query: string): void {
+    console.log('hello');
+
     this.sharedService.getChatBotResponse(query).subscribe({
       next: (res: any) => {
         this.isTyping.set(false);
@@ -116,6 +118,10 @@ export class ChatBot {
           botData: apiRes.data ?? undefined,
         };
         this.messages.update(msgs => [...msgs, botMessage]);
+        console.log('hello');
+
+        console.log(this.messages);
+
         if (!this.isOpen()) {
           this.unreadCount.update(n => n + 1);
         }
