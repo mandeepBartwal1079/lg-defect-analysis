@@ -12,7 +12,7 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    padding: 12px 24px;
+    padding: 12px;
     overflow: hidden;
   }
 
@@ -20,20 +20,8 @@
     display: none !important;
   }
 
-  @media (max-width: 1024px) {
-    .app-container {
-      padding: 20px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .app-container {
-      padding: 16px;
-    }
-  }
-
   @media (max-width: 480px) {
     .app-container {
-      padding: 12px;
+      padding: 8px;
     }
   }

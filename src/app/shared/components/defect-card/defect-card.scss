@@ -1,16 +1,16 @@
 .defect-card {
   background: rgba(15, 23, 42, 0.95);
   border-radius: 10px;
-  padding: clamp(10px, 1.2vw, 20px);
+  padding: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
-  gap: clamp(8px, 1vw, 16px);
+  gap: 10px;
   color: #fff;
   transition: border-color 0.2s;
-  height: 100%;
   box-sizing: border-box;
+  min-height: 280px;
 
   &.clickable {
     cursor: pointer;
@@ -69,11 +69,11 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: clamp(6px, 0.8vw, 10px);
-  gap: clamp(6px, 0.8vw, 12px);
+  padding-bottom: 8px;
+  gap: 8px;
 
   .model-name {
-    font-size: clamp(16px, 1.6vw, 22px);
+    font-size: 18px;
     font-weight: 700;
     margin: 0;
     color: #fff;
@@ -84,9 +84,9 @@
   }
 
   .plan-id {
-    font-size: clamp(10px, 0.8vw, 12px);
+    font-size: 11px;
     font-weight: 600;
-    padding: clamp(3px, 0.4vw, 6px) clamp(6px, 0.6vw, 10px);
+    padding: 4px 8px;
     background: rgba(130, 170, 255, 0.15);
     border: 1px solid rgba(130, 170, 255, 0.3);
     border-radius: 4px;
@@ -95,9 +95,9 @@
   }
 
   .plan-tool {
-    font-size: clamp(10px, 0.8vw, 12px);
+    font-size: 11px;
     font-weight: 600;
-    padding: clamp(3px, 0.4vw, 6px) clamp(6px, 0.6vw, 10px);
+    padding: 4px 8px;
     background: rgba(195, 232, 141, 0.15);
     border: 1px solid rgba(195, 232, 141, 0.3);
     border-radius: 4px;
@@ -109,7 +109,7 @@
 .production-info {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: clamp(6px, 0.8vw, 12px);
+  gap: 8px;
 
   .info-item {
     display: flex;
@@ -117,14 +117,14 @@
     gap: 2px;
 
     .label {
-      font-size: clamp(9px, 0.7vw, 12px);
+      font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: rgba(255, 255, 255, 0.4);
     }
 
     .value {
-      font-size: clamp(14px, 1vw, 18px);
+      font-size: 15px;
       font-weight: 600;
       color: #fff;
 
@@ -139,9 +139,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
 
   .section-title {
     font-size: clamp(11px, 0.8vw, 14px);
@@ -150,20 +147,16 @@
     color: rgba(255, 255, 255, 0.6);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding-bottom: 4px;
-    flex-shrink: 0;
   }
 
   .defect-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto; // Allow defects themselves to scroll if too many
   }
 
   .defect-item {
-    padding: clamp(6px, 0.8vw, 10px);
+    padding: 8px;
     background: rgba(255, 255, 255, 0.02);
     border-radius: 6px;
     display: flex;
@@ -172,7 +165,7 @@
     flex-shrink: 0;
 
     .defect-levels {
-      font-size: clamp(10px, 0.8vw, 13px);
+      font-size: 11px;
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
@@ -200,7 +193,7 @@
     .defect-meta {
       display: flex;
       justify-content: space-between;
-      font-size: clamp(9px, 0.7vw, 11px);
+      font-size: 10px;
       color: rgba(255, 255, 255, 0.4);
 
       .qty {
@@ -212,11 +205,15 @@
 }
 
 .no-defects {
-  font-size: clamp(11px, 0.8vw, 14px);
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.25);
   text-align: center;
-  padding: 16px;
+  padding: 20px;
   background: rgba(255, 255, 255, 0.02);
   border-radius: 8px;
   border: 1px dashed rgba(255, 255, 255, 0.1);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

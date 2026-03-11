@@ -19,24 +19,42 @@
   min-height: 0;
   background: rgba(15, 23, 42, 0.95);
   border-radius: 12px;
-  padding: clamp(12px, 1.5vw, 24px);
-  margin: 0 auto;
+  padding: 16px;
   width: 100%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  max-width: min(2500px, 98vw);
-  overflow: hidden; // Ensure dashboard itself doesn't scroll
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
 }
 
 /* Web-first: desktop grid – 3–4 columns, cards use full width */
 .defects-grid {
-  flex: 1;
-  min-height: 0;
-  height: 100%;
   display: grid;
-  grid-auto-rows: 1fr;
-  gap: clamp(12px, 1.2vw, 24px);
+  grid-auto-rows: auto;
+  gap: 16px;
+  align-content: start;
 }
 
 /* Large desktop: allow 5 columns */
@@ -55,24 +73,14 @@
 
 /* Tablet */
 @media (max-width: 1024px) {
-  .dashboard {
-    padding: 16px;
-  }
-
   .defects-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
   }
 }
 
 @media (max-width: 768px) {
-  .dashboard {
-    padding: 16px;
-  }
-
   .defects-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
   }
 }
 
@@ -85,7 +93,6 @@
 
   .defects-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
   }
 }
 
