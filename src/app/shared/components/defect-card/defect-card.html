@@ -1,4 +1,4 @@
-<article class="defect-card" [class.clickable]="plan()" (click)="openPlanDetails()">
+<article class="defect-card" [class.clickable]="plan() || tool()">
   <div class="card-header">
     @if (plan()) {
       <h3 class="model-name">{{ plan()?.modelNumber || 'Unknown Model' }}</h3>
@@ -26,7 +26,7 @@
     <div class="defects-section">
       <div class="defect-list">
         @for (defect of top5Defects(); track defect.defectName) {
-          <div class="defect-item">
+          <div class="defect-item" (click)="openDefectDetails(defect)">
             <div class="defect-levels">
               <span class="lv3">{{ defect.defectName }}</span>
             </div>

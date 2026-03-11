@@ -23,25 +23,40 @@
           <!-- Error Information -->
           <div class="section">
             <div class="section-header">
-              <h3>ERROR INFORMATION</h3>
+              <h3>DEFECT INFORMATION</h3>
             </div>
             <div class="info-grid">
+              <div class="info-item full-width">
+                <span class="info-label">Defect Name:</span>
+                <span class="info-value">{{ defectClickData()?.defect?.defectName }}</span>
+              </div>
               <div class="info-item">
-                <span class="info-label">Defect Type:</span>
-                <span class="info-value">{{ defectDetail()?.data?.defectType }}</span>
+                <span class="info-label">Count:</span>
+                <span class="info-value">{{ defectClickData()?.defect?.count }}</span>
               </div>
-              <div class="info-item full-width">
-                <span class="info-label">Model:</span>
-                <span class="info-value">{{ defectDetail()?.data?.model }}</span>
+              <div class="info-item">
+                <span class="info-label">Percentage:</span>
+                <span class="info-value">{{ defectClickData()?.defect?.percentage }}%</span>
               </div>
-              <div class="info-item full-width">
-                <span class="info-label">Occurrences:</span>
-                <span class="info-value">{{ defectDetail()?.data?.occurrencesDisplay }}</span>
-              </div>
-              <div class="info-item full-width">
-                <span class="info-label">Resolution Date:</span>
-                <span class="info-value">{{ defectDetail()?.data?.resolutionDate }}</span>
-              </div>
+              @if (defectClickData()?.plan) {
+                <div class="info-item full-width">
+                  <span class="info-label">Model:</span>
+                  <span class="info-value">{{ defectClickData()?.modelName }}</span>
+                </div>
+              } @else if (defectClickData()?.tool) {
+                <div class="info-item full-width">
+                  <span class="info-label">Tool Name:</span>
+                  <span class="info-value">{{ defectClickData()?.toolName }}</span>
+                </div>
+                <!-- <div class="info-item">
+                  <span class="info-label">Total Models:</span>
+                  <span class="info-value">{{ defectClickData()?.tool?.totalModels }}</span>
+                </div> -->
+                <!-- <div class="info-item">
+                  <span class="info-label">Total Defects:</span>
+                  <span class="info-value">{{ defectClickData()?.tool?.totalDefects }}</span>
+                </div> -->
+              }
             </div>
           </div>
 
@@ -61,19 +76,27 @@
 
         <!-- Right Column -->
         <div class="right-column">
-          <!-- Resolution Steps / Remedies -->
+          <!-- Resolution Steps -->
           <div class="section">
             <div class="section-header">
               <h3>RESOLUTION STEPS</h3>
             </div>
 
             <div class="steps-list">
-              @for (step of defectDetail()?.data?.resolutionSteps; track step) {
-              <div class="step-item">
-                <div class="step-content">
-                  <span class="step-text">{{ step }}</span>
+              @if (resolutionSteps() && resolutionSteps().length > 0) {
+                @for (resolution of resolutionSteps(); track resolution.resolutionId) {
+                  @for (cause of resolution.causes; track cause.causeId) {
+                    <div class="step-item">
+                      <div class="step-content">
+                        <span class="step-text">{{ cause.causeDescription }}</span>
+                      </div>
+                    </div>
+                  }
+                }
+              } @else {
+                <div class="no-steps">
+                  <p>No resolution steps available for this defect.</p>
                 </div>
-              </div>
               }
             </div>
           </div>

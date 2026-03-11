@@ -146,3 +146,26 @@ export interface Tool {
   totalDefects: number
   top5Defects: Top5Defect[]
 }
+
+// Resolution Steps Response
+export interface ResolutionStepsResponse {
+  data: ResolutionStep[]
+  success: boolean
+  message: string
+}
+
+export interface ResolutionStep {
+  resolutionId: number
+  defectName: string
+  defectCategory: string
+  defectPart: string
+  defectType: string
+  totalCauses: number
+  causes: Cause[]
+}
+
+export interface Cause {
+  causeId: number
+  causeNumber: number
+  causeDescription: string
+}

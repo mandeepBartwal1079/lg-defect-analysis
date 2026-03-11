@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
-import { ApiResponse, DefectModalDataI, ModelNamesResponse, ToolsApiResponse } from '../types/common.types';
+import { ApiResponse, DefectModalDataI, ModelNamesResponse, ToolsApiResponse, ResolutionStepsResponse } from '../types/common.types';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -47,6 +47,10 @@ export class Shared {
 
   getDefectModalData(modelNumber: string){
     return this._httpClient.get<DefectModalDataI>(`${environment.apiUrl}Master/GetModelDefectDetail?modelNumber=${modelNumber}`);
+  }
+
+  getResolutionStepsByDefect(defectName: string){
+    return this._httpClient.get<ResolutionStepsResponse>(`${environment.apiUrl}Master/GetCausesByDefectName/causes?defectName=${defectName}`);
   }
 
   getProductionLines() {

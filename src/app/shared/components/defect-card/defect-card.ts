@@ -1,6 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, input, computed, output } from '@angular/core';
-import { Plan, Defect, Tool } from '../../types/common.types';
+import { Plan, Defect, Tool, Top5Defect } from '../../types/common.types';
+
+export interface DefectClickData {
+  defect: Top5Defect;
+  plan?: Plan;
+  tool?: Tool;
+  modelName?: string;
+  toolName?: string;
+}
 
 @Component({
   selector: 'app-defect-card',
@@ -11,7 +19,7 @@ import { Plan, Defect, Tool } from '../../types/common.types';
 export class DefectCard {
   plan = input<Plan | null>(null);
   tool = input<Tool | null>(null);
-  openDetails = output<Plan>();
+  openDetails = output<DefectClickData>();
 
   // Use top5Defects from either plan or tool
   top5Defects = computed(() => {
@@ -22,10 +30,22 @@ export class DefectCard {
     return [];
   });
 
-  openPlanDetails(): void {
+  openDefectDetails(defect: Top5Defect): void {
     const p = this.plan();
+    const t = this.tool();
+
+    const clickData: DefectClickData = {
+      defect: defect
+    };
+
     if (p) {
-      this.openDetails.emit(p);
+      clickData.plan = p;
+      clickData.modelName = p.modelNumber;
+    } else if (t) {
+      clickData.tool = t;
+      clickData.toolName = t.tool;
     }
+
+    this.openDetails.emit(clickData);
   }
 }

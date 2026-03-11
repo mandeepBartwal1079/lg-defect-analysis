@@ -11,7 +11,6 @@
   transition: border-color 0.2s;
   box-sizing: border-box;
   height: 100%;
-
   &.clickable {
     cursor: pointer;
     &:hover {
@@ -153,6 +152,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    cursor: pointer;
   }
 
   .defect-item {
@@ -165,7 +165,7 @@
     flex-shrink: 0;
 
     .defect-levels {
-      font-size: 11px;
+      font-size: 12px;
       display: flex;
       flex-wrap: wrap;
       gap: 4px;

@@ -3,9 +3,9 @@ import { Component, inject, signal, DestroyRef, computed, effect, HostListener }
 import { Header } from '../../shared/components/header/header';
 import { ChatBot } from '../../shared/components/chat-bot/chat-bot';
 import { Shared } from '../../shared/services/shared';
-import { ApiResponse, DefectModalDataI, Plan, ToolsApiResponse, Tool } from '../../shared/types/common.types';
+import { ApiResponse, Plan, ToolsApiResponse, Tool } from '../../shared/types/common.types';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { DefectCard } from '../../shared/components/defect-card/defect-card';
+import { DefectCard, DefectClickData } from '../../shared/components/defect-card/defect-card';
 import { Filters } from '../../shared/components/filters/filters';
 import { switchMap } from 'rxjs';
 import { DefectModal } from '../../shared/components/defect-modal/defect-modal';
@@ -22,7 +22,7 @@ export class Dashboard {
   plans = signal<Plan[]>([]);
   toolsData = signal<Tool[]>([]);
   isModalOpen = signal(false);
-  selectedDefectDetail = signal<DefectModalDataI | null>(null);
+  selectedDefectClickData = signal<DefectClickData | null>(null);
   windowWidth = signal(window.innerWidth);
   filtersVisible = signal<boolean>(false);
 
@@ -91,21 +91,48 @@ export class Dashboard {
     });
   }
 
-  openPlanDetails(plan: Plan) {
+  openDefectDetails(clickData: DefectClickData) {
+    console.log('\n╔════════════════════════════════════════════╗');
+    console.log('║   SENDING DATA TO MODAL (Dashboard)       ║');
+    console.log('╚════════════════════════════════════════════╝');
+    
+    if (clickData.plan) {
+      console.log('\n📋 PLAN DEFECT CLICKED:');
+      console.log('  Model Name:', clickData.modelName || clickData.plan.modelNumber);
+      console.log('  Plan ID:', clickData.plan.planId);
+      console.log('  Production Line:', clickData.plan.productionLine);
+      console.log('  Tool:', clickData.plan.tool);
+      console.log('  Total Quantity:', clickData.plan.totalQuantity);
+      console.log('  Completed Qty:', clickData.plan.completedQty);
+      console.log('  Remaining Qty:', clickData.plan.remainingQty);
+      console.log('  Completion %:', clickData.plan.completionPercentage);
+      console.log('  Is Overdue:', clickData.plan.isOverdue);
+      console.log('  Days Remaining:', clickData.plan.daysRemaining);
+    } else if (clickData.tool) {
+      console.log('\n🔧 TOOL DEFECT CLICKED:');
+      console.log('  Tool Name:', clickData.toolName || clickData.tool.tool);
+      console.log('  Total Models:', clickData.tool.totalModels);
+      console.log('  Total Defects:', clickData.tool.totalDefects);
+      console.log('  Models:', clickData.tool.models);
+      console.log('  Production Lines:', clickData.tool.productionLines);
+    }
+    
+    console.log('\n🐛 DEFECT DETAILS:');
+    console.log('  Defect Name:', clickData.defect.defectName);
+    console.log('  Count:', clickData.defect.count);
+    console.log('  Percentage:', clickData.defect.percentage + '%');
+    
+    console.log('\n📦 Complete Click Data Object:');
+    console.log(clickData);
+    console.log('═══════════════════════════════════════════\n');
+
+    this.selectedDefectClickData.set(clickData);
     this.isModalOpen.set(true);
-    this.selectedDefectDetail.set(null); // Clear previous detail
-    this.sharedService.getDefectModalData(plan.modelNumber).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((response: DefectModalDataI) => {
-      if (response.success) {
-        this.selectedDefectDetail.set(response);
-      } else {
-        console.error(response.message);
-      }
-    });
   }
 
   closeModal() {
     this.isModalOpen.set(false);
-    this.selectedDefectDetail.set(null);
+    this.selectedDefectClickData.set(null);
   }
 
   protected gridCols = computed(() => {
