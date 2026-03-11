@@ -8,6 +8,11 @@
   // backdrop-filter: blur(10px);
 }
 
+.logo{
+  width: clamp(80px, 12vw, 100px);
+  height: auto;
+}
+
 /* LEFT LOGO */
 .header-left {
   display: flex;
