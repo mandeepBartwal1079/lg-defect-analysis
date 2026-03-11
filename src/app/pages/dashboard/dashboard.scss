@@ -52,7 +52,7 @@
 /* Web-first: desktop grid – 3–4 columns, cards use full width */
 .defects-grid {
   display: grid;
-  grid-auto-rows: auto;
+  grid-auto-rows: minmax(200px, auto);
   gap: 16px;
   align-content: start;
 }
