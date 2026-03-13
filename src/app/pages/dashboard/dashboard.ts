@@ -3,11 +3,11 @@ import { Component, inject, signal, DestroyRef, computed, effect, HostListener }
 import { Header } from '../../shared/components/header/header';
 import { ChatBot } from '../../shared/components/chat-bot/chat-bot';
 import { Shared } from '../../shared/services/shared';
-import { ApiResponse, Plan, ToolsApiResponse, Tool } from '../../shared/types/common.types';
+import { ApiResponse, Plan, ToolsApiResponse, Tool, ModelFilterItem, ModelFilterResponse } from '../../shared/types/common.types';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DefectCard, DefectClickData } from '../../shared/components/defect-card/defect-card';
 import { Filters } from '../../shared/components/filters/filters';
-import { switchMap } from 'rxjs';
+import { switchMap, map } from 'rxjs';
 import { DefectModal } from '../../shared/components/defect-modal/defect-modal';
 
 @Component({
@@ -20,11 +20,14 @@ export class Dashboard {
   sharedService = inject(Shared);
   destroyRef = inject(DestroyRef);
   plans = signal<Plan[]>([]);
+  modelData = signal<ModelFilterItem[]>([]);
   toolsData = signal<Tool[]>([]);
   isModalOpen = signal(false);
   selectedDefectClickData = signal<DefectClickData | null>(null);
   windowWidth = signal(window.innerWidth);
   filtersVisible = signal<boolean>(false);
+  tools = signal<string[]>([]);
+  models = signal<string[]>([]);
 
   @HostListener('window:resize')
   onResize() {
@@ -36,30 +39,63 @@ export class Dashboard {
   });
 
  constructor() {
-    toObservable(this.sharedService.currentFilters)
+    const filters$ = toObservable(this.sharedService.currentFilters);
+
+    this.sharedService.getDataJson()
       .pipe(
-        switchMap(filters => {
-          if (filters.viewType === 'tools') {
-            return this.sharedService.getCurrentProductionPlansByTool(filters);
-          } else {
-            return this.sharedService.getCurrentProductionPlans(filters);
+        map((response) => {
+          if (response && response.data) {
+            const uniqueModels = new Set<string>();
+            const uniqueTools = new Set<string>();
+
+            response.data.forEach((item: any) => {
+              if (item.MODLID) {
+                uniqueModels.add(item.MODLID);
+              }
+              if (item.TOOL_NAME) {
+                const toolPrefix = item.TOOL_NAME.split('_')[0];
+                uniqueTools.add(toolPrefix);
+              }
+            });
+
+            this.models.set(Array.from(uniqueModels));
+            this.tools.set(Array.from(uniqueTools));
           }
+          return response;
+        }),
+        switchMap(() => filters$),
+        switchMap(filters => {
+          this.sharedService.setLoading(true);
+          const payload = {
+            modelNumbers: filters.viewType === 'models' ? this.models() : null,
+            tools: filters.viewType === 'tools' ? this.tools() : null
+          };
+          return this.sharedService.GetTodayProductionPlansByFilters(payload);
         }),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((response: ApiResponse | ToolsApiResponse) => {
-        if (response.success) {
-          if (this.sharedService.currentFilters().viewType === 'tools') {
-            this.toolsData.set((response as ToolsApiResponse).data);
-            this.plans.set([]);
+      .subscribe({
+        next: (response: ModelFilterResponse | ToolsApiResponse) => {
+          this.sharedService.setLoading(false);
+          if (response.success) {
+            if (this.sharedService.currentFilters().viewType === 'tools') {
+              this.toolsData.set((response as ToolsApiResponse).data);
+              this.modelData.set([]);
+            } else {
+              this.modelData.set((response as ModelFilterResponse).data);
+              this.toolsData.set([]);
+            }
           } else {
-            this.plans.set((response as ApiResponse).data);
+            this.modelData.set([]);
             this.toolsData.set([]);
+            console.error(response.message);
           }
-        } else {
-          this.plans.set([]);
+        },
+        error: (error) => {
+          this.sharedService.setLoading(false);
+          console.error('Error loading data:', error);
+          this.modelData.set([]);
           this.toolsData.set([]);
-          console.error(response.message);
         }
       });
   }
@@ -95,33 +131,8 @@ export class Dashboard {
     console.log('\n╔════════════════════════════════════════════╗');
     console.log('║   SENDING DATA TO MODAL (Dashboard)       ║');
     console.log('╚════════════════════════════════════════════╝');
-    
-    if (clickData.plan) {
-      console.log('\n📋 PLAN DEFECT CLICKED:');
-      console.log('  Model Name:', clickData.modelName || clickData.plan.modelNumber);
-      console.log('  Plan ID:', clickData.plan.planId);
-      console.log('  Production Line:', clickData.plan.productionLine);
-      console.log('  Tool:', clickData.plan.tool);
-      console.log('  Total Quantity:', clickData.plan.totalQuantity);
-      console.log('  Completed Qty:', clickData.plan.completedQty);
-      console.log('  Remaining Qty:', clickData.plan.remainingQty);
-      console.log('  Completion %:', clickData.plan.completionPercentage);
-      console.log('  Is Overdue:', clickData.plan.isOverdue);
-      console.log('  Days Remaining:', clickData.plan.daysRemaining);
-    } else if (clickData.tool) {
-      console.log('\n🔧 TOOL DEFECT CLICKED:');
-      console.log('  Tool Name:', clickData.toolName || clickData.tool.tool);
-      console.log('  Total Models:', clickData.tool.totalModels);
-      console.log('  Total Defects:', clickData.tool.totalDefects);
-      console.log('  Models:', clickData.tool.models);
-      console.log('  Production Lines:', clickData.tool.productionLines);
-    }
-    
-    console.log('\n🐛 DEFECT DETAILS:');
-    console.log('  Defect Name:', clickData.defect.defectName);
-    console.log('  Count:', clickData.defect.count);
-    console.log('  Percentage:', clickData.defect.percentage + '%');
-    
+
+
     console.log('\n📦 Complete Click Data Object:');
     console.log(clickData);
     console.log('═══════════════════════════════════════════\n');
@@ -138,7 +149,7 @@ export class Dashboard {
   protected gridCols = computed(() => {
     const width = this.windowWidth();
     const isTools = this.sharedService.currentFilters().viewType === 'tools';
-    const n = isTools ? this.toolsData().length : this.filteredPlans().length;
+    const n = isTools ? this.toolsData().length : this.modelData().length;
 
     let maxCols = 4;
     if (width < 480) {

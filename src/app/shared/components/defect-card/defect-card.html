@@ -1,16 +1,18 @@
-<article class="defect-card" [class.clickable]="plan() || tool()">
+<article class="defect-card" [class.clickable]="plan() || tool() || model()">
   <div class="card-header">
-    @if (plan()) {
+    @if (model()) {
+      <h3 class="model-name">{{ model()?.modelName }}</h3>
+      <div class="tool-meta">
+        <!-- <span class="plan-id">{{ model()?.tool }}</span> -->
+        <span class="plan-id">{{ model()?.productionLine }}</span>
+      </div>
+    } @else if (plan()) {
       <h3 class="model-name">{{ plan()?.modelNumber || 'Unknown Model' }}</h3>
       @if (plan()?.productionLine) {
         <span class="plan-id">{{ plan()?.productionLine }}</span>
       }
     } @else if (tool()) {
       <h3 class="model-name">{{ tool()?.tool }}</h3>
-      <!-- <div class="tool-meta">
-        <span class="tool-badge">{{ tool()?.totalModels }} Models</span>
-        <span class="defect-count-badge">{{ tool()?.totalDefects }} Defects</span>
-      </div> -->
     }
   </div>
 

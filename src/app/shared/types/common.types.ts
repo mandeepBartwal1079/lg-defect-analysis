@@ -131,6 +131,21 @@ export interface ModelName {
   name: string
 }
 
+// Model Filter Response
+export interface ModelFilterItem {
+  modelId: number
+  modelName: string
+  tool: string
+  productionLine: string
+  top5Defects: Top5Defect[]
+}
+
+export interface ModelFilterResponse {
+  data: ModelFilterItem[]
+  success: boolean
+  message: string
+}
+
 // Tools Response
 export interface ToolsApiResponse {
   data: Tool[]
