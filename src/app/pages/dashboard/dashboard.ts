@@ -28,6 +28,15 @@ export class Dashboard {
   filtersVisible = signal<boolean>(false);
   tools = signal<string[]>([]);
   models = signal<string[]>([]);
+  private allJsonData = signal<any[]>([]);
+
+  private formatToDataJsonDate(date: Date): string {
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = months[date.getMonth()];
+    const year = String(date.getFullYear()).slice(-2);
+    return `${day}-${month}-${year}`;
+  }
 
   @HostListener('window:resize')
   onResize() {
@@ -38,38 +47,59 @@ export class Dashboard {
     return new Date().toLocaleDateString();
   });
 
- constructor() {
+  constructor() {
     const filters$ = toObservable(this.sharedService.currentFilters);
 
-    this.sharedService.getDataJson()
+    filters$
       .pipe(
-        map((response) => {
+        switchMap(filters => {
+          this.sharedService.setLoading(true);
+          // 1. Fetch JSON data with the selected production line
+          return this.sharedService.getDataJson(filters.productionLine).pipe(
+            map(response => ({ response, filters }))
+          );
+        }),
+        switchMap(({ response, filters }) => {
           if (response && response.data) {
-            const uniqueModels = new Set<string>();
-            const uniqueTools = new Set<string>();
+            this.allJsonData.set(response.data);
+          }
 
-            response.data.forEach((item: any) => {
-              if (item.MODLID) {
-                uniqueModels.add(item.MODLID);
-              }
+          // 2. Determine target date string
+          const targetDate = new Date();
+          if (filters.date === 'tomorrow') {
+            targetDate.setDate(targetDate.getDate() + 1);
+          }
+          const dateStr = this.formatToDataJsonDate(targetDate);
+
+          // 3. Extract unique models and tools for that specific date
+          const uniqueModels = new Set<string>();
+          const uniqueTools = new Set<string>();
+
+          this.allJsonData().forEach((item: any) => {
+            if (item.PRDTN_STRT_DATE === dateStr) {
+              if (item.MODLID) uniqueModels.add(item.MODLID);
               if (item.TOOL_NAME) {
                 const toolPrefix = item.TOOL_NAME.split('_')[0];
                 uniqueTools.add(toolPrefix);
               }
-            });
+            }
+          });
 
-            this.models.set(Array.from(uniqueModels));
-            this.tools.set(Array.from(uniqueTools));
+          this.models.set(Array.from(uniqueModels));
+          this.tools.set(Array.from(uniqueTools));
+          
+          let modelNumbers: string[] | null = null;
+          let tools: string[] | null = null;
+
+          if (filters.viewType === 'models') {
+            modelNumbers = filters.selectedModel ? [filters.selectedModel] : (this.models().length > 0 ? this.models() : null);
+            tools = null;
+          } else {
+            tools = filters.selectedTool ? [filters.selectedTool] : (this.tools().length > 0 ? this.tools() : null);
+            modelNumbers = null;
           }
-          return response;
-        }),
-        switchMap(() => filters$),
-        switchMap(filters => {
-          this.sharedService.setLoading(true);
-          const payload = {
-            modelNumbers: filters.viewType === 'models' ? this.models() : null,
-            tools: filters.viewType === 'tools' ? this.tools() : null
-          };
+
+          const payload = { modelNumbers, tools };
           return this.sharedService.GetTodayProductionPlansByFilters(payload);
         }),
         takeUntilDestroyed(this.destroyRef)

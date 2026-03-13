@@ -9,7 +9,7 @@ import { environment } from '../../../../environments/environment';
 export class Shared {
   private isLoadingSignal = signal<boolean>(false);
   isLoading = computed(() => this.isLoadingSignal());
-  currentFiltersSignal = signal<any>({ viewType: 'tools' });
+  currentFiltersSignal = signal<any>({ viewType: 'tools', productionLine: 'PR1' });
 
   setLoading(value: boolean) {
     this.isLoadingSignal.set(value);
@@ -73,8 +73,8 @@ export class Shared {
     return this._httpClient.get<ModelNamesResponse>(`${environment.apiUrl}Master/GetTodayProductionPlanModelNumbers`);
   }
 
-  getDataJson() {
-    return this._httpClient.get<any>('/Json/data.json');
+  getDataJson(line?: string) {
+    return this._httpClient.get<any>(`http://10.101.32.169/production_api.php?line=${line}`);
   }
 
   applyFilters(filters: any) {
@@ -82,6 +82,6 @@ export class Shared {
   }
 
   clearFilters() {
-    this.currentFiltersSignal.set({ viewType: 'tools' });
+    this.currentFiltersSignal.set({ viewType: 'tools', productionLine: 'PR1' });
   }
 }

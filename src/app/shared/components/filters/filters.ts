@@ -14,6 +14,8 @@ import { ModelName } from '../../types/common.types';
 export class Filters {
   sharedService = inject(Shared);
   @Input() showFilters: boolean = false;
+  @Input() modelsList: string[] = [];
+  @Input() toolsList: string[] = [];
   selectedDay = signal<'today' | 'tomorrow' | ''>('');
   readonly today = new Date();
   readonly tomorrow = (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d; })();
@@ -21,7 +23,7 @@ export class Filters {
   viewType = signal<'models' | 'tools'>('tools');
 
   // Model dropdown states
-  selectedModel = signal<ModelName | null>(null);
+  selectedModel = signal<string>('');
   modelDropdownOpen = signal<boolean>(false);
   modelSearchQuery = signal<string>('');
   // Tool dropdown states
@@ -29,7 +31,7 @@ export class Filters {
   toolDropdownOpen = signal<boolean>(false);
   toolSearchQuery = signal<string>('');
   // Production line dropdown states
-  selectedProductionLine = signal<string>('');
+  selectedProductionLine = signal<string>(this.sharedService.currentFilters().productionLine || '');
   productionLineDropdownOpen = signal<boolean>(false);
   productionLineSearchQuery = signal<string>('');
 
@@ -47,9 +49,9 @@ export class Filters {
   // Filtered lists based on search
   filteredModelNames = computed(() => {
     const query = this.modelSearchQuery().toLowerCase();
-    const models = this.modelNamesData();
+    const models = this.modelsList || [];
     if (!query) return models;
-    return models.filter(model => model.name.toLowerCase().includes(query));
+    return models.filter(model => model.toLowerCase().includes(query));
   });
 
   filteredProductionLines = computed(() => {
@@ -59,11 +61,9 @@ export class Filters {
     return lines.filter(line => line.toLowerCase().includes(query));
   });
 
-  toolsData = computed(() => this.sharedService.getTools());
-
   filteredTools = computed(() => {
     const query = this.toolSearchQuery().toLowerCase();
-    const tools = this.toolsData();
+    const tools = this.toolsList || [];
     if (!query) return tools;
     return tools.filter(tool => tool.toLowerCase().includes(query));
   });
@@ -97,7 +97,7 @@ export class Filters {
     }
   }
 
-  selectModel(model: ModelName): void {
+  selectModel(model: string): void {
     this.selectedModel.set(model);
     this.modelDropdownOpen.set(false);
     this.modelSearchQuery.set('');
@@ -116,7 +116,7 @@ export class Filters {
   }
 
   clearModelSelection(): void {
-    this.selectedModel.set(null);
+    this.selectedModel.set('');
     this.modelSearchQuery.set('');
   }
 
@@ -133,7 +133,7 @@ export class Filters {
   setViewType(type: 'models' | 'tools'): void {
     this.viewType.set(type);
     if (type === 'tools') {
-      this.selectedModel.set(null);
+      this.selectedModel.set('');
       this.selectedProductionLine.set('');
     } else {
       this.selectedTool.set('');
@@ -147,10 +147,10 @@ export class Filters {
     };
 
     if (this.viewType() === 'models') {
-      if (this.selectedModel()) filters.modelNumber = this.selectedModel()!.name;
+      if (this.selectedModel()) filters.selectedModel = this.selectedModel();
       if (this.selectedProductionLine()) filters.productionLine = this.selectedProductionLine();
     } else {
-      if (this.selectedTool()) filters.tool = this.selectedTool();
+      if (this.selectedTool()) filters.selectedTool = this.selectedTool();
     }
     const dateValue = this.selectedDate();
     if (dateValue !== '') filters.date = dateValue;
@@ -158,12 +158,10 @@ export class Filters {
     this.modelDropdownOpen.set(false);
     this.toolDropdownOpen.set(false);
     this.productionLineDropdownOpen.set(false);
-    this.toolDropdownOpen.set(false);
-
   }
 
   clearFilters(): void {
-    this.selectedModel.set(null);
+    this.selectedModel.set('');
     this.selectedProductionLine.set('');
     this.selectedTool.set('');
     this.selectedDay.set('');
@@ -177,7 +175,7 @@ export class Filters {
   hasActiveFilters(): boolean {
     if (this.viewType() === 'models') {
       return (
-        this.selectedModel() !== null ||
+        this.selectedModel() !== '' ||
         this.selectedProductionLine() !== '' ||
         this.selectedDay() !== ''
       );

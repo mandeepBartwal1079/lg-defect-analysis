@@ -24,7 +24,7 @@
             <path d="M2 5L8 11L14 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round" />
           </svg>
-          <span class="dropdown-value">{{ selectedModel()?.name || 'Select Model Name...' }}</span>
+          <span class="dropdown-value">{{ selectedModel() || 'Select Model Name...' }}</span>
           @if (selectedModel()) {
           <button class="clear-input-btn" (click)="clearModelSelection(); $event.stopPropagation()">
             <svg width="14" height="14" viewBox="0 0 14 14">
@@ -44,9 +44,9 @@
               (input)="modelSearchQuery.set($any($event.target).value)" (click)="$event.stopPropagation()" />
           </div>
           <div class="dropdown-list">
-            @for (model of filteredModelNames(); track model.id) {
-            <div class="dropdown-item" [class.selected]="selectedModel()?.id === model.id" (click)="selectModel(model)">
-              {{ model.name }}
+            @for (model of filteredModelNames(); track model) {
+            <div class="dropdown-item" [class.selected]="selectedModel() === model" (click)="selectModel(model)">
+              {{ model }}
             </div>
             }
             @if (filteredModelNames().length === 0) {
@@ -179,15 +179,14 @@
           </svg>
           Apply
         </button>
-        @if (sharedService.currentFilters() && (sharedService.currentFilters().modelNumber ||
-        sharedService.currentFilters().productionLine || sharedService.currentFilters().tool || sharedService.currentFilters().date)) {
+
         <button class="clear-filters-btn" (click)="clearFilters()">
           <svg width="16" height="16" viewBox="0 0 16 16">
             <path d="M3 3L13 13M3 13L13 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           </svg>
           Clear
         </button>
-        }
+
       </div>
     </div>
   </div>

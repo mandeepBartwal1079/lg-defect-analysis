@@ -1,7 +1,11 @@
 <div class="dashboard-root">
   <app-header (filterToggle)="showFilters($event)"></app-header>
   <div class="dashboard">
-    <app-filters [showFilters]="filtersVisible()" />
+    <app-filters 
+      [showFilters]="filtersVisible()" 
+      [modelsList]="models()" 
+      [toolsList]="tools()"
+    />
     
     <div class="dashboard-content">
       @if (sharedService.isLoading()) {
