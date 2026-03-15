@@ -49,15 +49,15 @@ export class Shared {
     return this._httpClient.get<ApiResponse>(`${environment.apiUrl}ChatBot/Chat?query=${query}`);
   }
 
-  getDefectModalData(modelNumber: string){
+  getDefectModalData(modelNumber: string) {
     return this._httpClient.get<DefectModalDataI>(`${environment.apiUrl}Master/GetModelDefectDetail?modelNumber=${modelNumber}`);
   }
 
-  getResolutionStepsByDefect(defectName: string){
+  getResolutionStepsByDefect(defectName: string) {
     return this._httpClient.get<ResolutionStepsResponse>(`${environment.apiUrl}Master/GetCausesByDefectName/causes?defectName=${defectName}`);
   }
 
-  GetTodayProductionPlansByFilters(data: {modelNumbers: string[] | null, tools: string[] | null}){
+  GetTodayProductionPlansByFilters(data: { modelNumbers: string[] | null, tools: string[] | null }) {
     return this._httpClient.post<ModelFilterResponse | ToolsApiResponse>(`${environment.apiUrl}Master/GetTodayProductionPlansByFilters`, data);
   }
 
@@ -74,7 +74,14 @@ export class Shared {
   }
 
   getDataJson(line?: string) {
+    console.log('getDataJson called with production line:', line || 'No line specified');
+    if (line) {
+      console.log('Applied production line in getDataJson:', line);
+    }
     return this._httpClient.get<any>(`http://10.101.32.169/production_api.php?line=${line}`);
+   
+    
+    // return this._httpClient.get('/Json/data.json');
   }
 
   applyFilters(filters: any) {

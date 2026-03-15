@@ -141,14 +141,17 @@ export class Filters {
     this.applyFilters();
   }
 
-  applyFilters(): void {
+  applyFilters(): void {    
     const filters: any = {
       viewType: this.viewType()
     };
 
     if (this.viewType() === 'models') {
       if (this.selectedModel()) filters.selectedModel = this.selectedModel();
-      if (this.selectedProductionLine()) filters.productionLine = this.selectedProductionLine();
+      if (this.selectedProductionLine()) {
+        filters.productionLine = this.selectedProductionLine();
+        console.log('Applied production line:', this.selectedProductionLine());
+      }
     } else {
       if (this.selectedTool()) filters.selectedTool = this.selectedTool();
     }
