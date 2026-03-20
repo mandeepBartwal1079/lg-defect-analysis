@@ -38,6 +38,7 @@
               <span class="info-label">Percentage:</span>
               <span class="info-value">{{ defectClickData()?.defect?.percentage }}%</span>
             </div>
+            @if(resolutionSteps()[0].reportUrl != null) {
             <div class="info-item full-width" (click)="openErrorManual(resolutionSteps()[0].reportUrl)">
               <span class="info-label">Defect Document</span>
               <span class="info-value document-badge">
@@ -50,6 +51,7 @@
                 </svg>
                 View Document</span>
             </div>
+            }
             @if (defectClickData()?.plan) {
             <div class="info-item full-width">
               <span class="info-label">Model:</span>
