@@ -1,18 +1,18 @@
 <article class="defect-card" [class.clickable]="plan() || tool() || model()">
   <div class="card-header">
     @if (model()) {
-      <h3 class="model-name">{{ model()?.modelName }}</h3>
-      <div class="tool-meta">
-        <!-- <span class="plan-id">{{ model()?.tool }}</span> -->
-        <span class="plan-id">{{ model()?.productionLine }}</span>
-      </div>
+    <h3 class="model-name">{{ model()?.modelName }}</h3>
+    <div class="tool-meta">
+      <!-- <span class="plan-id">{{ model()?.tool }}</span> -->
+      <span class="plan-id">{{ sharedService.currentProductionLine() }}</span>
+    </div>
     } @else if (plan()) {
-      <h3 class="model-name">{{ plan()?.modelNumber || 'Unknown Model' }}</h3>
-      @if (plan()?.productionLine) {
-        <span class="plan-id">{{ plan()?.productionLine }}</span>
-      }
+    <h3 class="model-name">{{ plan()?.modelNumber || 'Unknown Model' }}</h3>
+    @if (plan()?.productionLine) {
+    <span class="plan-id">{{ sharedService.currentProductionLine() }}</span>
+    }
     } @else if (tool()) {
-      <h3 class="model-name">{{ tool()?.tool }}</h3>
+    <h3 class="model-name">{{ tool()?.tool }}</h3>
     }
   </div>
 
@@ -25,24 +25,24 @@
   } -->
 
   @if (top5Defects().length > 0) {
-    <div class="defects-section">
-      <div class="defect-list">
-        @for (defect of top5Defects(); track defect.defectName) {
-          <div class="defect-item" (click)="openDefectDetails(defect)">
-            <div class="defect-levels">
-              <span class="lv3">{{ defect.defectName }}</span>
-            </div>
-            <div class="defect-meta">
-              <span class="qty"></span>
-              <span class="percentage">{{ defect.count }} ({{ defect.percentage }}%)</span>
-            </div>
-          </div>
-        }
+  <div class="defects-section">
+    <div class="defect-list">
+      @for (defect of top5Defects(); track defect.defectName) {
+      <div class="defect-item" (click)="openDefectDetails(defect)">
+        <div class="defect-levels">
+          <span class="lv3">{{ defect.defectName }}</span>
+        </div>
+        <div class="defect-meta">
+          <span class="qty"></span>
+          <span class="percentage">{{ defect.count }} ({{ defect.percentage }}%)</span>
+        </div>
       </div>
+      }
     </div>
+  </div>
   } @else {
-    <div class="no-defects">
-      No defects recorded
-    </div>
+  <div class="no-defects">
+    No defects recorded
+  </div>
   }
 </article>

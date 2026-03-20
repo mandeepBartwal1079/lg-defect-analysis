@@ -176,6 +176,7 @@ export interface ResolutionStep {
   defectPart: string
   defectType: string
   totalCauses: number
+  reportUrl: string
   causes: Cause[]
 }
 

@@ -169,6 +169,19 @@
   font-size: 13px;
   color: #64748b;
   font-weight: 500;
+  cursor: pointer;
+}
+
+.document-badge {
+  padding: 3px !important;
+  border-radius: 6px !important;
+  background-color: #10b981 !important;
+  color: white !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
 }
 
 .info-value {
@@ -180,6 +193,7 @@
     color: #ef4444;
     font-weight: 600;
   }
+
   word-wrap: break-word;
   overflow-wrap: break-word;
 }

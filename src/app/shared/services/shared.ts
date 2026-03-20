@@ -10,13 +10,13 @@ export class Shared {
   private isLoadingSignal = signal<boolean>(false);
   isLoading = computed(() => this.isLoadingSignal());
   currentFiltersSignal = signal<any>({ viewType: 'tools', productionLine: 'PR1' });
-
   setLoading(value: boolean) {
     this.isLoadingSignal.set(value);
   }
   currentFilters = computed(() => this.currentFiltersSignal());
   productionLines = signal<string[]>(['PR1', 'PR2', 'PL1', 'PL2', 'PL3', 'UHD', 'L02', 'PWM1', 'PA1', 'PA2', 'PA4', 'PA5']);
   tools = signal<string[]>(['AL7', 'VS4', 'VT6', 'VT7']);
+  currentProductionLine = signal<string>('PR1');
   constructor(
     private _httpClient: HttpClient
   ) { }
@@ -74,14 +74,14 @@ export class Shared {
   }
 
   getDataJson(line?: string) {
-    console.log('getDataJson called with production line:', line || 'No line specified');
-    if (line) {
-      console.log('Applied production line in getDataJson:', line);
-    }
-    return this._httpClient.get<any>(`http://10.101.32.169/production_api.php?line=${line}`);
-   
-    
-    // return this._httpClient.get('/Json/data.json');
+    // console.log('getDataJson called with production line:', line || 'No line specified');
+    // if (line) {
+    //   console.log('Applied production line in getDataJson:', line);
+    // }
+    // return this._httpClient.get<any>(`http://10.101.32.169/production_api.php?line=${line}`);
+
+
+    return this._httpClient.get('/Json/data.json');
   }
 
   applyFilters(filters: any) {

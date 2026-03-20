@@ -50,98 +50,98 @@ export class Dashboard {
   constructor() {
     const filters$ = toObservable(this.sharedService.currentFilters);
 
-   
-  filters$
-    .pipe(
-      switchMap(filters => {
-        this.sharedService.setLoading(true);
-        return this.sharedService.getDataJson(filters.productionLine).pipe(
-          map(response => ({ response, filters })),
-          // ✅ getDataJson error aaye toh subscription mat maro
-          catchError(err => {
-            console.error('getDataJson error:', err);
-            this.sharedService.setLoading(false);
-            return of({ response: null, filters });
-          })
-        );
-      }),
-      switchMap(({ response, filters }) => {
-        if (response && (response as any).data) {
-          this.allJsonData.set((response as any).data);
-        }
 
-        const targetDate = new Date();
-        if (filters.date === 'tomorrow') {
-          targetDate.setDate(targetDate.getDate() + 1);
-        }
-        const dateStr = this.formatToDataJsonDate(targetDate);
-
-        const uniqueModels = new Set<string>();
-        const uniqueTools = new Set<string>();
-
-        this.allJsonData().forEach((item: any) => {
-          if (item.PRDTN_STRT_DATE === dateStr) {
-            if (item.MODLID) uniqueModels.add(item.MODLID);
-            if (item.TOOL_NAME) {
-              const toolPrefix = item.TOOL_NAME.split('_')[0];
-              uniqueTools.add(toolPrefix);
-            }
+    filters$
+      .pipe(
+        switchMap(filters => {
+          this.sharedService.setLoading(true);
+          return this.sharedService.getDataJson(filters.productionLine).pipe(
+            map(response => ({ response, filters })),
+            // ✅ getDataJson error aaye toh subscription mat maro
+            catchError(err => {
+              console.error('getDataJson error:', err);
+              this.sharedService.setLoading(false);
+              return of({ response: null, filters });
+            })
+          );
+        }),
+        switchMap(({ response, filters }) => {
+          if (response && (response as any).data) {
+            this.allJsonData.set((response as any).data);
           }
-        });
+          this.sharedService.currentProductionLine.set((response as any).line);
+          const targetDate = new Date();
+          if (filters.date === 'tomorrow') {
+            targetDate.setDate(targetDate.getDate() + 1);
+          }
+          const dateStr = this.formatToDataJsonDate(targetDate);
 
-        this.models.set(Array.from(uniqueModels));
-        this.tools.set(Array.from(uniqueTools));
+          const uniqueModels = new Set<string>();
+          const uniqueTools = new Set<string>();
 
-        let modelNumbers: string[] | null = null;
-        let tools: string[] | null = null;
+          this.allJsonData().forEach((item: any) => {
+            if (item.PRDTN_STRT_DATE === dateStr) {
+              if (item.MODLID) uniqueModels.add(item.MODLID);
+              if (item.TOOL_NAME) {
+                const toolPrefix = item.TOOL_NAME.split('_')[0];
+                uniqueTools.add(toolPrefix);
+              }
+            }
+          });
 
-        if (filters.viewType === 'models') {
-          modelNumbers = filters.selectedModel 
-            ? [filters.selectedModel] 
-            : (this.models().length > 0 ? this.models() : null);
-          tools = null;
-        } else {
-          tools = filters.selectedTool 
-            ? [filters.selectedTool] 
-            : (this.tools().length > 0 ? this.tools() : null);
-          modelNumbers = null;
-        }
+          this.models.set(Array.from(uniqueModels));
+          this.tools.set(Array.from(uniqueTools));
 
-        const payload = { modelNumbers, tools };
+          let modelNumbers: string[] | null = null;
+          let tools: string[] | null = null;
 
-        return this.sharedService.GetTodayProductionPlansByFilters(payload).pipe(
-          // ✅ API error aaye toh bhi subscription zinda rahe
-          catchError(err => {
-            console.error('GetTodayProductionPlansByFilters error:', err);
-            this.sharedService.setLoading(false);
-            return of({ success: false, message: err.message, data: [] } as any);
-          })
-        );
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    )
-    .subscribe({
-      next: (response: ModelFilterResponse | ToolsApiResponse) => {
-        this.sharedService.setLoading(false);
-        if (response.success) {
-          if (this.sharedService.currentFilters().viewType === 'tools') {
-            this.toolsData.set((response as ToolsApiResponse).data);
-            this.modelData.set([]);
+          if (filters.viewType === 'models') {
+            modelNumbers = filters.selectedModel
+              ? [filters.selectedModel]
+              : (this.models().length > 0 ? this.models() : null);
+            tools = null;
           } else {
-            this.modelData.set((response as ModelFilterResponse).data);
+            tools = filters.selectedTool
+              ? [filters.selectedTool]
+              : (this.tools().length > 0 ? this.tools() : null);
+            modelNumbers = null;
+          }
+
+          const payload = { modelNumbers, tools };
+
+          return this.sharedService.GetTodayProductionPlansByFilters(payload).pipe(
+            // ✅ API error aaye toh bhi subscription zinda rahe
+            catchError(err => {
+              console.error('GetTodayProductionPlansByFilters error:', err);
+              this.sharedService.setLoading(false);
+              return of({ success: false, message: err.message, data: [] } as any);
+            })
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+        next: (response: ModelFilterResponse | ToolsApiResponse) => {
+          this.sharedService.setLoading(false);
+          if (response.success) {
+            if (this.sharedService.currentFilters().viewType === 'tools') {
+              this.toolsData.set((response as ToolsApiResponse).data);
+              this.modelData.set([]);
+            } else {
+              this.modelData.set((response as ModelFilterResponse).data);
+              this.toolsData.set([]);
+            }
+          } else {
+            this.modelData.set([]);
             this.toolsData.set([]);
           }
-        } else {
-          this.modelData.set([]);
-          this.toolsData.set([]);
+        },
+        // ✅ error yahan aaya toh bhi subscription nahi marti ab (catchError handle kar leta hai)
+        error: (error) => {
+          this.sharedService.setLoading(false);
+          console.error('Unhandled error:', error);
         }
-      },
-      // ✅ error yahan aaya toh bhi subscription nahi marti ab (catchError handle kar leta hai)
-      error: (error) => {
-        this.sharedService.setLoading(false);
-        console.error('Unhandled error:', error);
-      }
-    });
+      });
   }
 
   showFilters(show: boolean) {

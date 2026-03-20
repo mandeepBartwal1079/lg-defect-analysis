@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, computed, output } from '@angular/core';
-import { Plan, Defect, Tool, Top5Defect, ModelFilterItem } from '../../types/common.types';
+import { Component, input, computed, output, inject } from '@angular/core';
+import { Plan, Tool, Top5Defect, ModelFilterItem } from '../../types/common.types';
+import { Shared } from '../../services/shared';
 
 export interface DefectClickData {
   defect: Top5Defect;
@@ -22,6 +23,7 @@ export class DefectCard {
   tool = input<Tool | null>(null);
   model = input<ModelFilterItem | null>(null);
   openDetails = output<DefectClickData>();
+  sharedService = inject(Shared);
 
   top5Defects = computed(() => {
     const m = this.model();
@@ -55,4 +57,7 @@ export class DefectCard {
 
     this.openDetails.emit(clickData);
   }
+
+
+
 }
