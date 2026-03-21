@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatBotApiResponse, ChatMessage } from '../../types/common.types';
 import { SafeHtmlPipe } from '../../pipes/safe-html-pipe';
 import { Shared } from '../../services/shared';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-chat-bot',
@@ -190,5 +191,17 @@ export class ChatBot {
   getDefectColor(index: number): string {
     const colors = ['#F04E81', '#A50034', '#FF7A9C'];
     return colors[index % colors.length];
+  }
+
+  onViewDocument(errorManualUrl: string): void {
+    const apiUrl = environment.apiUrl;
+       try {
+         const url = new URL(apiUrl);
+         const baseUrl = url.origin;
+         const filePath = errorManualUrl.startsWith('/') ? errorManualUrl : `/${errorManualUrl}`;
+         window.open(baseUrl + filePath, '_blank');
+       } catch {
+         window.open(apiUrl + errorManualUrl, '_blank');
+       }
   }
 }

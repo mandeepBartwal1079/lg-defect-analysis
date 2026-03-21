@@ -70,6 +70,7 @@ export interface ChatBotDefect {
   productionLine: string;
   detectedProcess: string;
   defectDate: string;
+  url?: any;
 }
 
 export interface ChatBotPart {

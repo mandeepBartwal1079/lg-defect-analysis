@@ -109,7 +109,7 @@
               <span class="dc-value">{{ message.botData.modelName }}</span>
             </div>
             @if (message.botData.parts && message.botData.parts.length) {
-            @for (part of message.botData.parts; track part.partId) {
+            @for (part of message.botData.parts.slice(0, 3); track part.partId) {
             <div class="dc-row">
               <span class="dc-label">Part</span>
               <span class="dc-value">{{ part.partName }}</span>
@@ -127,6 +127,9 @@
               <span class="defect-rank">{{ i + 1 }}</span>
               <div class="defect-body">
                 <div class="defect-name">{{ defect.defectName }}</div>
+                @if(defect.url !== null) {
+                <div class="defect-link" (click)="onViewDocument(defect.url)">View Document</div>
+                }
               </div>
             </div>
             }
@@ -186,7 +189,7 @@
             </div>
           </div>
           }
-          
+
           <div class="defects-section">
             <div class="defects-title">Models</div>
             @for (model of message.botData.models; track model.modelName; let i = $index) {

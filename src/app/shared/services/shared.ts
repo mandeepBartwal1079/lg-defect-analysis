@@ -73,15 +73,15 @@ export class Shared {
     return this._httpClient.get<ModelNamesResponse>(`${environment.apiUrl}Master/GetTodayProductionPlanModelNumbers`);
   }
 
-  getDataJson(line?: string) {
-    // console.log('getDataJson called with production line:', line || 'No line specified');
-    // if (line) {
-    //   console.log('Applied production line in getDataJson:', line);
-    // }
-    // return this._httpClient.get<any>(`http://10.101.32.169/production_api.php?line=${line}`);
+  getDataJson(line?: string) {    
+    console.log('getDataJson called with production line:', line || 'No line specified');
+    if (line) {
+      console.log('Applied production line in getDataJson:', line);
+    }
+    return this._httpClient.get<any>(`http://10.101.32.169/production_api.php?line=${line}`);
 
 
-    return this._httpClient.get('/Json/data.json');
+    // return this._httpClient.get('/Json/data.json');
   }
 
   applyFilters(filters: any) {
